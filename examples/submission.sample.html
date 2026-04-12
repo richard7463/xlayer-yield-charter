@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>xlayer-yield-charter Submission Surface</title>
+    <style>
+      :root { --bg: #f5f1e8; --panel: #fffaf0; --ink: #1a1916; --muted: #656055; --line: #d7cfbe; --accent: #0f766e; }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: Georgia, "Times New Roman", serif; color: var(--ink); background: radial-gradient(circle at top right, #fff5dc 0, transparent 36%), linear-gradient(180deg, #ede4d3 0%, var(--bg) 100%); }
+      .wrap { width: min(1220px, calc(100vw - 36px)); margin: 24px auto 56px; }
+      .hero, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 12px 36px rgba(40, 31, 15, 0.08); }
+      .hero { padding: 32px; }
+      .eyebrow { display: inline-block; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+      h1, h2 { margin: 0; }
+      h1 { margin-top: 16px; font-size: 48px; line-height: 0.95; }
+      h2 { font-size: 22px; margin-bottom: 12px; }
+      p, li { color: var(--muted); line-height: 1.6; }
+      .hero-grid, .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+      .hero-grid { margin-top: 24px; }
+      .metric { grid-column: span 3; padding: 16px; border-radius: 18px; background: #fff; border: 1px solid var(--line); }
+      .metric .value { font-size: 28px; font-weight: 700; color: var(--accent); }
+      .metric .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+      .grid { margin-top: 18px; }
+      .panel { padding: 24px; }
+      .span-5 { grid-column: span 5; }
+      .span-6 { grid-column: span 6; }
+      .span-7 { grid-column: span 7; }
+      .span-12 { grid-column: 1 / -1; }
+      table { width: 100%; border-collapse: collapse; font-size: 14px; }
+      th, td { padding: 10px 8px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+      th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+      .link-row a { display: inline-block; margin-right: 10px; margin-bottom: 10px; padding: 10px 14px; border-radius: 999px; text-decoration: none; border: 1px solid var(--line); background: #fff; color: var(--ink); }
+      @media (max-width: 960px) { .metric, .span-5, .span-6, .span-7 { grid-column: 1 / -1; } h1 { font-size: 34px; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="hero">
+        <div class="eyebrow">X Layer Human Track Submission</div>
+        <h1>xlayer-yield-charter</h1>
+        <p>
+          A human-defined treasury charter keeps principal locked, releases only harvested yield,
+          and lets the agent spend that released yield under a short-lived execution lease.
+        </p>
+        <div class="hero-grid">
+          <div class="metric"><div class="label">Principal floor</div><div class="value">$4.00</div></div>
+          <div class="metric"><div class="label">Released yield</div><div class="value">$3.00</div></div>
+          <div class="metric"><div class="label">Remaining yield</div><div class="value">$3.00</div></div>
+          <div class="metric"><div class="label">Execution</div><div class="value">simulated</div></div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel span-7">
+          <h2>What This Project Is</h2>
+          <p>
+            This is a treasury primitive for autonomous agents. Humans keep principal control, publish a yield release,
+            and let agents operate only on the released operating budget.
+          </p>
+          <ul>
+            <li>Principal floor is explicit and inspectable.</li>
+            <li>Released yield is separately budgeted from principal.</li>
+            <li>Execution is gated before funds move, not only logged after the fact.</li>
+            <li>Every spend carries reason, receipt, and optional onchain proof.</li>
+          </ul>
+        </article>
+
+        <article class="panel span-5">
+          <h2>Latest Round</h2>
+          <p><strong>Request:</strong> USDT0/OKB via okx-aggregator</p>
+          <p><strong>Requested:</strong> $1.68</p>
+          <p><strong>Final:</strong> $1</p>
+          <p><strong>Capital layer:</strong> none</p>
+          <p><strong>Rationale:</strong> Charter allowed the request but resized it to stay inside released yield and route quality limits.</p>
+          <div class="link-row" style="margin-top:14px;">
+            <a href="./proof-dashboard.html">Open Proof Dashboard</a>
+            <a href="./live-proof-latest.json">Open Latest JSON</a>
+          </div>
+        </article>
+
+        <article class="panel span-6">
+          <h2>Charter + Lease</h2>
+          <p><strong>Charter ID:</strong> <span class="mono">charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0</span></p>
+          <p><strong>Lease ID:</strong> <span class="mono">lease_3b135e2b-110d-432d-824b-a7ee0b54deb8</span></p>
+          <p><strong>Wallet:</strong> <span class="mono">unscoped</span></p>
+          <p><strong>Yield source:</strong> xlayer-yield-buffer (declared_release)</p>
+          <p><strong>Lease budget:</strong> $1 per tx / $3 per day</p>
+        </article>
+
+        <article class="panel span-6">
+          <h2>How Judges Should Read It</h2>
+          <ul>
+            <li><strong>OnchainOS path:</strong> wallet, quote, route, and trade execution sit in the critical path.</li>
+            <li><strong>X Layer fit:</strong> charter, lease, and receipts are scoped to X Layer treasury operations.</li>
+            <li><strong>AI interaction:</strong> humans release yield budget; agents consume it inside a machine-readable envelope.</li>
+            <li><strong>Completeness:</strong> charter file, lease file, request, checks, receipt, proof dashboard, and submission page all exist.</li>
+          </ul>
+        </article>
+
+        <article class="panel span-12">
+          <h2>Recent Charter Rounds</h2>
+          <table>
+            <thead><tr><th>Generated</th><th>Outcome</th><th>Tx</th><th>Summary</th></tr></thead>
+            <tbody>
+        <tr>
+          <td>2026-04-12T09:05:25.237Z</td>
+          <td>resize</td>
+          <td class="mono">none</td>
+          <td>product=xlayer-yield-charter | operator=active | charter=charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0 | lease=lease_3b135e2b-110d-432d-824b-a7ee0b54deb8 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
+        </tr>
+      
+        <tr>
+          <td>2026-04-12T08:49:38.451Z</td>
+          <td>resize</td>
+          <td class="mono">none</td>
+          <td>product=xlayer-yield-charter | operator=active | charter=charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0 | lease=lease_3b135e2b-110d-432d-824b-a7ee0b54deb8 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
+        </tr>
+      </tbody>
+          </table>
+        </article>
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+[Unit]
+Description=X Layer Yield Charter runtime
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/xlayer-yield-charter
+EnvironmentFile=/opt/xlayer-yield-charter/.env.local
+ExecStart=/usr/bin/env npm run round:live
+
+[Install]
+WantedBy=multi-user.target

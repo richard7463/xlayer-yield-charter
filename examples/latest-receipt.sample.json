@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-04-12T09:05:25.237Z",
+  "leaseId": "lease_3b135e2b-110d-432d-824b-a7ee0b54deb8",
+  "charterId": "charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0",
+  "consumerName": "yield-ops-agent",
+  "requestId": "req_024de6a3-68dd-47de-9a96-07d79463cce5",
+  "status": "recorded",
+  "capitalLayer": "none",
+  "spentUsd": 0,
+  "note": "Charter decision passed, but execution mode is simulate or live treasury is unavailable."
+}

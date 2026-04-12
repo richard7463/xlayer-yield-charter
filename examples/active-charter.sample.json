@@ -1,0 +1,16 @@
+{
+  "charterId": "charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0",
+  "issuedAt": "2026-04-12T08:49:35.028Z",
+  "status": "active",
+  "ownerLabel": "human-treasury-owner",
+  "consumerName": "yield-ops-agent",
+  "principalFloorUsd": 4,
+  "releasedYieldUsd": 3,
+  "spendAsset": "USDT0",
+  "yieldSourceMode": "declared_release",
+  "yieldSourceName": "xlayer-yield-buffer",
+  "notes": [
+    "Only harvested and released yield becomes spendable operating budget.",
+    "Principal stays locked. Only released yield can be spent by the agent."
+  ]
+}

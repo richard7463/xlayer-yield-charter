@@ -1,0 +1,38 @@
+{
+  "leaseId": "lease_3b135e2b-110d-432d-824b-a7ee0b54deb8",
+  "issuedAt": "2026-04-12T08:49:36.237Z",
+  "expiresAt": "2026-04-13T08:49:36.238Z",
+  "status": "active",
+  "ownerLabel": "human-treasury-owner",
+  "consumerName": "yield-ops-agent",
+  "baseAsset": "USDT0",
+  "allowedAssets": [
+    "USDT0",
+    "USDC",
+    "OKB"
+  ],
+  "allowedProtocols": [
+    "okx-aggregator",
+    "quickswap"
+  ],
+  "allowedActions": [
+    "buy",
+    "sell",
+    "rebalance"
+  ],
+  "counterpartyAllowlist": [
+    "okx-aggregator",
+    "quickswap"
+  ],
+  "perTxUsd": 1,
+  "dailyBudgetUsd": 3,
+  "trustRequirements": {
+    "reasonRequired": true,
+    "proofRequired": true,
+    "operatorCanPause": true,
+    "degradedRequiresReview": false
+  },
+  "notes": [
+    "Principal stays locked. Only released yield can be spent by the agent."
+  ]
+}

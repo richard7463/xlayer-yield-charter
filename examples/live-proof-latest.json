@@ -1,0 +1,244 @@
+{
+  "generatedAt": "2026-04-12T09:05:25.237Z",
+  "product": "xlayer-yield-charter",
+  "operator": {
+    "operatorName": "human-treasury-owner",
+    "mode": "active",
+    "lastCommand": "resume",
+    "note": "demo baseline",
+    "updatedAt": "2026-04-12T08:49:37.133Z"
+  },
+  "charter": {
+    "charterId": "charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0",
+    "issuedAt": "2026-04-12T08:49:35.028Z",
+    "status": "active",
+    "ownerLabel": "human-treasury-owner",
+    "consumerName": "yield-ops-agent",
+    "principalFloorUsd": 4,
+    "releasedYieldUsd": 3,
+    "spendAsset": "USDT0",
+    "yieldSourceMode": "declared_release",
+    "yieldSourceName": "xlayer-yield-buffer",
+    "notes": [
+      "Only harvested and released yield becomes spendable operating budget.",
+      "Principal stays locked. Only released yield can be spent by the agent."
+    ]
+  },
+  "treasury": {
+    "timestamp": "2026-04-12T09:05:25.234Z",
+    "network": "xlayer-mainnet",
+    "chainId": 196,
+    "baseAsset": "USDT0",
+    "totalUsd": 11.8,
+    "liquidUsd": 11.799999999999999,
+    "capitalAtRiskUsd": 0,
+    "balances": [
+      {
+        "symbol": "USDT0",
+        "amount": 5.4,
+        "usdValue": 5.4
+      },
+      {
+        "symbol": "USDC",
+        "amount": 2.8,
+        "usdValue": 2.8
+      },
+      {
+        "symbol": "OKB",
+        "amount": 0.029,
+        "usdValue": 3.6
+      }
+    ]
+  },
+  "yieldLedger": {
+    "updatedAt": "2026-04-12T09:05:25.238Z",
+    "yieldSourceMode": "declared_release",
+    "yieldSourceName": "xlayer-yield-buffer",
+    "treasuryUsd": 11.8,
+    "principalFloorUsd": 4,
+    "treasuryBufferUsd": 7.8,
+    "accruedYieldUsd": 7.8,
+    "releasedYieldUsd": 3,
+    "harvestedYieldUsd": 3,
+    "spentYieldUsd": 0,
+    "spendableYieldUsd": 3,
+    "remainingYieldBudgetUsd": 3
+  },
+  "lease": {
+    "leaseId": "lease_3b135e2b-110d-432d-824b-a7ee0b54deb8",
+    "issuedAt": "2026-04-12T08:49:36.237Z",
+    "expiresAt": "2026-04-13T08:49:36.238Z",
+    "status": "active",
+    "ownerLabel": "human-treasury-owner",
+    "consumerName": "yield-ops-agent",
+    "baseAsset": "USDT0",
+    "allowedAssets": [
+      "USDT0",
+      "USDC",
+      "OKB"
+    ],
+    "allowedProtocols": [
+      "okx-aggregator",
+      "quickswap"
+    ],
+    "allowedActions": [
+      "buy",
+      "sell",
+      "rebalance"
+    ],
+    "counterpartyAllowlist": [
+      "okx-aggregator",
+      "quickswap"
+    ],
+    "perTxUsd": 1,
+    "dailyBudgetUsd": 3,
+    "trustRequirements": {
+      "reasonRequired": true,
+      "proofRequired": true,
+      "operatorCanPause": true,
+      "degradedRequiresReview": false
+    },
+    "notes": [
+      "Principal stays locked. Only released yield can be spent by the agent."
+    ]
+  },
+  "request": {
+    "requestId": "req_024de6a3-68dd-47de-9a96-07d79463cce5",
+    "createdAt": "2026-04-12T09:05:25.236Z",
+    "sourceProject": "yield-ops-agent",
+    "consumerName": "yield-ops-agent",
+    "leaseId": "lease_3b135e2b-110d-432d-824b-a7ee0b54deb8",
+    "action": "rebalance",
+    "assetPair": "USDT0/OKB",
+    "fromToken": "OKB",
+    "toToken": "USDT0",
+    "venueHint": "okx-aggregator",
+    "counterparty": "okx-aggregator",
+    "notionalUsd": 1.68,
+    "reason": "USDT0 is underweight and OKB is overweight relative to the office target allocation. Spend is constrained to released yield only."
+  },
+  "checks": [
+    {
+      "id": "operator_mode",
+      "label": "Operator mode",
+      "ok": true,
+      "note": "operator=active"
+    },
+    {
+      "id": "lease_status",
+      "label": "Lease status",
+      "ok": true,
+      "note": "status=active"
+    },
+    {
+      "id": "lease_expiry",
+      "label": "Lease expiry",
+      "ok": true,
+      "note": "expiresAt=2026-04-13T08:49:36.238Z"
+    },
+    {
+      "id": "wallet_scope",
+      "label": "Wallet scope",
+      "ok": true,
+      "note": "unscoped"
+    },
+    {
+      "id": "reason_required",
+      "label": "Reason required",
+      "ok": true,
+      "note": "reason present"
+    },
+    {
+      "id": "action_allowed",
+      "label": "Action allowlist",
+      "ok": true,
+      "note": "action=rebalance"
+    },
+    {
+      "id": "asset_allowed",
+      "label": "Asset allowlist",
+      "ok": true,
+      "note": "OKB->USDT0"
+    },
+    {
+      "id": "protocol_allowed",
+      "label": "Protocol allowlist",
+      "ok": true,
+      "note": "venue=okx-aggregator"
+    },
+    {
+      "id": "counterparty_allowed",
+      "label": "Counterparty allowlist",
+      "ok": true,
+      "note": "counterparty=okx-aggregator"
+    },
+    {
+      "id": "per_tx_limit",
+      "label": "Per-tx budget",
+      "ok": false,
+      "note": "request=$1.68 / limit=$1"
+    },
+    {
+      "id": "daily_budget",
+      "label": "Daily budget",
+      "ok": true,
+      "note": "remaining=$3.00"
+    },
+    {
+      "id": "yield_budget",
+      "label": "Yield budget",
+      "ok": true,
+      "note": "remaining_yield=$3.00"
+    },
+    {
+      "id": "route_available",
+      "label": "Route available",
+      "ok": true,
+      "note": "route ready"
+    },
+    {
+      "id": "price_impact",
+      "label": "Price impact",
+      "ok": true,
+      "note": "impact=0.35% / max=2%"
+    },
+    {
+      "id": "token_safety",
+      "label": "Token safety",
+      "ok": true,
+      "note": "token scan passed"
+    }
+  ],
+  "usage": {
+    "startedAt": "2026-04-11T09:05:25.238Z",
+    "spent24hUsd": 0,
+    "remainingDailyUsd": 3,
+    "receiptCount24h": 2
+  },
+  "decision": {
+    "outcome": "resize",
+    "trustZone": "yellow",
+    "finalNotionalUsd": 1,
+    "policyHits": [
+      "budget_resize"
+    ],
+    "rationale": "Charter allowed the request but resized it to stay inside released yield and route quality limits."
+  },
+  "execution": {
+    "status": "simulated",
+    "network": "xlayer-mainnet",
+    "chainId": 196,
+    "note": "Charter decision passed, but execution mode is simulate or live treasury is unavailable."
+  },
+  "receipt": {
+    "generatedAt": "2026-04-12T09:05:25.237Z",
+    "leaseId": "lease_3b135e2b-110d-432d-824b-a7ee0b54deb8",
+    "charterId": "charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0",
+    "consumerName": "yield-ops-agent",
+    "requestId": "req_024de6a3-68dd-47de-9a96-07d79463cce5",
+    "status": "recorded",
+    "capitalLayer": "none",
+    "spentUsd": 0,
+    "note": "Charter decision passed, but execution mode is simulate or live treasury is unavailable."
+  }
+}

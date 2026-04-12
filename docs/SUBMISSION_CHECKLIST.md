@@ -12,7 +12,7 @@
 - [x] Proof JSON sample committed
 - [x] Proof dashboard sample committed
 - [x] Demo video script ready
-- [ ] GitHub repo created and public
+- [x] GitHub repo created and public
 - [ ] Demo video recorded and uploaded
 - [ ] X post published with `#BuildX` and `@XLayerOfficial`
 - [ ] Google Form submitted

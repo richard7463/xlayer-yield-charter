@@ -35,7 +35,7 @@ Richard — builder — @Richard_buildai
 
 ## GitHub Repository Link
 
-Fill after repo creation: https://github.com/richard7463/xlayer-yield-charter
+https://github.com/richard7463/xlayer-yield-charter
 
 ## OnchainOS Usage
 

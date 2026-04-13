@@ -3,243 +3,808 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>xlayer-yield-charter</title>
+    <title>Xlayer Yield Charter Control Tower</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #efe7d4;
-        --panel: #fff9ee;
-        --ink: #171510;
-        --muted: #635a49;
-        --line: #d8ccb4;
-        --accent: #0f766e;
-        --warn: #9a3412;
+        --bg: #07111b;
+        --bg-soft: #0c1928;
+        --panel: rgba(10, 21, 34, 0.88);
+        --panel-strong: #0f2133;
+        --line: rgba(130, 167, 197, 0.2);
+        --line-strong: rgba(130, 167, 197, 0.35);
+        --text: #ecf6ff;
+        --muted: #8da5bb;
+        --cyan: #69d5ff;
+        --green: #6ff0ba;
+        --amber: #f7bf66;
+        --red: #ff7f7f;
+        --navy: #08192a;
       }
       * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
       body {
         margin: 0;
-        font-family: "Avenir Next Condensed", "Franklin Gothic Medium", "Arial Narrow", sans-serif;
-        color: var(--ink);
-        background: radial-gradient(circle at top left, #fff5d6 0, transparent 32%), linear-gradient(180deg, #eadfc6 0%, var(--bg) 100%);
+        min-height: 100vh;
+        font-family: "IBM Plex Sans", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(105, 213, 255, 0.16), transparent 28%),
+          radial-gradient(circle at 85% 10%, rgba(247, 191, 102, 0.16), transparent 20%),
+          linear-gradient(180deg, #040b12 0%, var(--bg) 45%, #050d14 100%);
       }
-      .wrap { width: min(1260px, calc(100vw - 32px)); margin: 24px auto 56px; }
-      .hero, .panel { border: 1px solid var(--line); border-radius: 24px; background: var(--panel); box-shadow: 0 14px 40px rgba(50, 36, 12, 0.08); }
-      .hero { padding: 28px; }
-      .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin-top: 18px; }
-      .metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 18px; }
-      .metric { border: 1px solid var(--line); border-radius: 18px; padding: 16px; background: #fffdf7; }
-      .metric .label { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
-      .metric .value { font-size: 30px; margin-top: 8px; }
-      .panel { padding: 22px; }
-      .span-12 { grid-column: 1 / -1; }
-      .span-8 { grid-column: span 8; }
-      .span-6 { grid-column: span 6; }
-      .span-4 { grid-column: span 4; }
-      h1 { margin: 10px 0 6px; font-size: 48px; line-height: .95; }
-      h2 { margin: 0 0 12px; font-size: 24px; }
-      p { color: var(--muted); line-height: 1.55; }
-      table { width: 100%; border-collapse: collapse; }
-      th, td { padding: 10px 8px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
-      th { color: var(--muted); text-transform: uppercase; letter-spacing: .12em; font-size: 12px; }
-      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
-      .accent { color: var(--accent); }
-      .warn { color: var(--warn); }
-      @media (max-width: 980px) { .metrics { grid-template-columns: 1fr; } .span-4, .span-6, .span-8 { grid-column: 1 / -1; } h1 { font-size: 36px; } }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 24px 24px;
+        mask-image: linear-gradient(180deg, rgba(255,255,255,0.75), transparent 92%);
+      }
+      a { color: inherit; }
+      .shell {
+        width: min(1480px, calc(100vw - 28px));
+        margin: 14px auto 28px;
+        display: grid;
+        grid-template-columns: 290px minmax(0, 1fr);
+        gap: 18px;
+      }
+      .rail,
+      .panel,
+      .hero,
+      .meter-card,
+      .stat,
+      .check-card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, 0.32);
+      }
+      .rail {
+        border-radius: 28px;
+        padding: 22px 18px;
+        position: sticky;
+        top: 14px;
+        align-self: start;
+      }
+      .brand {
+        padding: 14px;
+        border-radius: 22px;
+        background: linear-gradient(160deg, rgba(105, 213, 255, 0.15), rgba(105, 213, 255, 0.02));
+        border: 1px solid rgba(105, 213, 255, 0.24);
+      }
+      .brand-mark,
+      .eyebrow,
+      .rail-label,
+      .metric-label,
+      .section-label,
+      .check-icon,
+      th,
+      .table-pill,
+      .mini-pill,
+      .status-pill {
+        font-family: "IBM Plex Mono", monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .brand-mark {
+        color: var(--cyan);
+        font-size: 12px;
+        margin-bottom: 12px;
+      }
+      .brand h1 {
+        margin: 0;
+        font: 700 30px/0.95 "Space Grotesk", sans-serif;
+      }
+      .brand p,
+      .meta p,
+      .link-stack a,
+      .narrative,
+      .subcopy,
+      .check-card p,
+      .helper,
+      td,
+      li,
+      .note {
+        color: var(--muted);
+      }
+      .meta,
+      .link-stack,
+      .rail-box {
+        margin-top: 16px;
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .rail-label {
+        color: var(--muted);
+        font-size: 11px;
+        margin-bottom: 8px;
+      }
+      .meta p,
+      .helper,
+      .subcopy,
+      .note,
+      td,
+      li {
+        line-height: 1.55;
+      }
+      .link-stack a {
+        display: block;
+        text-decoration: none;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        transition: border-color .18s ease, transform .18s ease, background .18s ease;
+      }
+      .link-stack a:hover {
+        border-color: rgba(105, 213, 255, 0.24);
+        background: rgba(105, 213, 255, 0.06);
+        transform: translateX(2px);
+      }
+      .main {
+        min-width: 0;
+      }
+      .hero {
+        border-radius: 32px;
+        padding: 28px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+        gap: 20px;
+        overflow: hidden;
+        position: relative;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto -160px -180px auto;
+        width: 420px;
+        height: 420px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(105, 213, 255, 0.18), transparent 70%);
+        filter: blur(24px);
+        pointer-events: none;
+      }
+      .eyebrow {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        color: var(--cyan);
+        font-size: 11px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(105, 213, 255, 0.2);
+        background: rgba(105, 213, 255, 0.08);
+      }
+      .hero h2,
+      .meter-card h2,
+      .panel h3 {
+        margin: 0;
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .hero h2 {
+        margin-top: 18px;
+        font-size: clamp(42px, 5vw, 72px);
+        line-height: 0.92;
+        max-width: 10ch;
+      }
+      .narrative {
+        margin: 16px 0 20px;
+        max-width: 66ch;
+        font-size: 16px;
+      }
+      .status-row,
+      .mini-pill-row,
+      .metric-grid,
+      .detail-grid,
+      .round-grid,
+      .stats-grid {
+        display: grid;
+        gap: 14px;
+      }
+      .status-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .status-pill,
+      .mini-pill,
+      .table-pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        padding: 7px 11px;
+        font-size: 11px;
+      }
+      .status-pill.ok { color: var(--green); border-color: rgba(111, 240, 186, 0.28); background: rgba(111, 240, 186, 0.08); }
+      .status-pill.warn { color: var(--amber); border-color: rgba(247, 191, 102, 0.28); background: rgba(247, 191, 102, 0.08); }
+      .status-pill.fail { color: var(--red); border-color: rgba(255, 127, 127, 0.28); background: rgba(255, 127, 127, 0.08); }
+      .metric-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-top: 22px;
+      }
+      .stat {
+        border-radius: 22px;
+        padding: 18px;
+        background: linear-gradient(180deg, rgba(12, 25, 40, 0.95), rgba(7, 17, 27, 0.88));
+      }
+      .metric-label {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .metric-value {
+        margin-top: 10px;
+        font: 700 28px/1 "Space Grotesk", sans-serif;
+      }
+      .metric-foot {
+        margin-top: 8px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .metric-value.cyan { color: var(--cyan); }
+      .metric-value.green { color: var(--green); }
+      .metric-value.amber { color: var(--amber); }
+      .metric-value.red { color: var(--red); }
+      .meter-card {
+        border-radius: 28px;
+        padding: 22px;
+        background: linear-gradient(180deg, rgba(14, 33, 51, 0.98), rgba(9, 20, 32, 0.96));
+      }
+      .meter-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+      }
+      .meter-total {
+        font: 700 30px/1 "Space Grotesk", sans-serif;
+        color: var(--cyan);
+      }
+      .meter-bar,
+      .remaining-track {
+        overflow: hidden;
+        border-radius: 999px;
+      }
+      .meter-bar {
+        display: flex;
+        height: 16px;
+        margin-top: 18px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(130, 167, 197, 0.16);
+      }
+      .segment { height: 100%; }
+      .segment.principal { background: linear-gradient(90deg, #14243a, #19314e); }
+      .segment.released { background: linear-gradient(90deg, #15636c, #26b0b8); }
+      .segment.spent { background: linear-gradient(90deg, #a96920, #f7bf66); }
+      .meter-legend {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .meter-legend strong { color: var(--text); display: block; margin-top: 4px; }
+      .swatch {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+      .swatch.principal { background: #29496f; }
+      .swatch.released { background: #39d4dd; }
+      .swatch.spent { background: #f7bf66; }
+      .swatch.remaining { background: #6ff0ba; }
+      .meter-note {
+        margin-top: 16px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .remaining-track {
+        margin-top: 16px;
+        height: 7px;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .remaining-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #59dca7, #8cf2c5);
+      }
+      .detail-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        margin-top: 18px;
+      }
+      .panel {
+        border-radius: 26px;
+        padding: 22px;
+      }
+      .panel h3 {
+        font-size: 24px;
+      }
+      .section-label {
+        color: var(--muted);
+        font-size: 11px;
+        margin-bottom: 10px;
+      }
+      .mini-pill-row {
+        grid-template-columns: repeat(auto-fit, minmax(170px, max-content));
+        margin-top: 14px;
+      }
+      .mini-pill {
+        color: var(--muted);
+        background: rgba(255,255,255,0.03);
+      }
+      .list-block {
+        margin: 14px 0 0;
+        padding-left: 18px;
+      }
+      .list-block li + li { margin-top: 8px; }
+      .data-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .data-card {
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .data-card .k {
+        font-family: "IBM Plex Mono", monospace;
+        text-transform: uppercase;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .data-card .v {
+        margin-top: 8px;
+        font-size: 16px;
+        color: var(--text);
+        word-break: break-word;
+      }
+      .check-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .check-card {
+        border-radius: 20px;
+        padding: 16px;
+      }
+      .check-card.ok { background: linear-gradient(180deg, rgba(16, 50, 44, 0.68), rgba(9, 28, 28, 0.92)); }
+      .check-card.fail { background: linear-gradient(180deg, rgba(70, 27, 27, 0.72), rgba(35, 13, 13, 0.92)); border-color: rgba(255, 127, 127, 0.2); }
+      .check-topline {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+      .check-icon { font-size: 11px; }
+      .check-card.ok .check-icon { color: var(--green); }
+      .check-card.fail .check-icon { color: var(--red); }
+      .check-label {
+        font: 600 16px/1.3 "IBM Plex Sans", sans-serif;
+        flex: 1;
+      }
+      .receipt-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .receipt-box {
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.03);
+      }
+      .receipt-box .k { color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 11px; text-transform: uppercase; }
+      .receipt-box .v { margin-top: 7px; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 12px 10px;
+        border-top: 1px solid var(--line);
+        vertical-align: top;
+      }
+      th { font-size: 11px; color: var(--muted); }
+      .mono {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+      }
+      .table-pill {
+        color: var(--cyan);
+        background: rgba(105, 213, 255, 0.08);
+        border-color: rgba(105, 213, 255, 0.18);
+      }
+      @media (max-width: 1220px) {
+        .shell { grid-template-columns: 1fr; }
+        .rail { position: static; }
+      }
+      @media (max-width: 1080px) {
+        .hero,
+        .detail-grid { grid-template-columns: 1fr; }
+        .metric-grid,
+        .status-row,
+        .receipt-grid,
+        .check-grid,
+        .data-grid,
+        .meter-legend { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 720px) {
+        .shell { width: min(100vw - 18px, 100%); }
+        .hero,
+        .panel,
+        .rail,
+        .meter-card,
+        .stat,
+        .check-card { border-radius: 22px; }
+        .metric-grid,
+        .status-row,
+        .receipt-grid,
+        .check-grid,
+        .data-grid,
+        .meter-legend { grid-template-columns: 1fr; }
+        .hero h2 { max-width: none; }
+      }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <section class="hero">
-        <div style="text-transform: uppercase; letter-spacing: .14em; color: var(--muted); font-size: 12px;">Principal locked · Yield spendable · X Layer</div>
-        <h1>xlayer-yield-charter</h1>
-        <p>
-          A human treasury owner sets a principal floor, releases a bounded amount of harvested yield,
-          then lets an agent operate only inside that released budget. The agent never gets principal access.
-        </p>
-        <div class="metrics">
-          <div class="metric"><div class="label">Principal floor</div><div class="value">$4.00</div></div>
-          <div class="metric"><div class="label">Released yield</div><div class="value accent">$3.00</div></div>
-          <div class="metric"><div class="label">Remaining yield</div><div class="value accent">$3.00</div></div>
-          <div class="metric"><div class="label">Outcome</div><div class="value">resize</div></div>
-          <div class="metric"><div class="label">Execution</div><div class="value warn">simulated</div></div>
+    <div class="shell">
+      <aside class="rail">
+        <div class="brand">
+          <div class="brand-mark">X Layer Human Track</div>
+          <h1>Xlayer Yield Charter</h1>
+          <p>
+            Treasury governance for autonomous agents. Principal remains locked. Released yield becomes the only spendable operating budget.
+          </p>
         </div>
-      </section>
 
-      <section class="grid">
-        <article class="panel span-8">
-          <h2>Yield Charter</h2>
+        <div class="meta">
+          <div class="rail-label">Operator Posture</div>
+          <p><strong>Active</strong></p>
+          <p>Last command: Resume</p>
+          <p>demo baseline</p>
+        </div>
+
+        <div class="rail-box">
+          <div class="rail-label">Submission Surface</div>
+          <p>Network: X Layer mainnet (196)</p>
+          <p>Consumer: yield-ops-agent</p>
+          <p>Spend asset: USDT0</p>
+          <p>Yield mode: Declared Release</p>
+        </div>
+
+        <div class="link-stack">
+          <div class="rail-label">What To Inspect</div>
+          <a href="#boundary">Capital boundary and released yield</a>
+          <a href="#request">Latest request and route decision</a>
+          <a href="#checks">Pre-execution policy checks</a>
+          <a href="#receipt">Receipt and transaction evidence</a>
+          <a href="#rounds">Recent charter rounds</a>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="hero">
+          <div>
+            <div class="eyebrow">Control Tower · Pre-Execution Governance</div>
+            <h2>Let agents spend yield, not principal.</h2>
+            <p class="narrative">
+              This proof surface shows a live treasury rule: a human treasury owner defines a principal floor, releases only harvested yield, then gives the agent a short-lived lease. Every X Layer request is checked against that envelope before execution is allowed.
+            </p>
+            <div class="status-row">
+              <span class="status-pill ok">Wallet scope Shared Flow</span>
+              <span class="status-pill ok">Execution Broadcasted</span>
+              <span class="status-pill warn">Decision Resize</span>
+              <span class="status-pill ok">Capital Yield</span>
+            </div>
+            <div class="metric-grid">
+              <article class="stat">
+                <div class="metric-label">Principal Floor</div>
+                <div class="metric-value cyan">$4.00</div>
+                <div class="metric-foot">Untouchable capital threshold</div>
+              </article>
+              <article class="stat">
+                <div class="metric-label">Released Yield</div>
+                <div class="metric-value green">$3.00</div>
+                <div class="metric-foot">Budget the agent can use</div>
+              </article>
+              <article class="stat">
+                <div class="metric-label">Remaining Budget</div>
+                <div class="metric-value amber">$2.00</div>
+                <div class="metric-foot">Yield still available today</div>
+              </article>
+              <article class="stat">
+                <div class="metric-label">Latest Request</div>
+                <div class="metric-value cyan">$1.00</div>
+                <div class="metric-foot">USDT0/OKB via okx-aggregator</div>
+              </article>
+            </div>
+          </div>
+          
+    <div class="meter-card">
+      <div class="meter-head">
+        <div>
+          <div class="eyebrow">Capital Envelope</div>
+          <h2>Treasury boundary before execution</h2>
+        </div>
+        <div class="meter-total">$16.83</div>
+      </div>
+      <div class="meter-bar">
+        <span class="segment principal" style="width:23.767082590612006%"></span>
+        <span class="segment released" style="width:17.825311942959004%"></span>
+        <span class="segment spent" style="width:5.9417706476530014%"></span>
+      </div>
+      <div class="meter-legend">
+        <div><span class="swatch principal"></span>Principal locked <strong>$4.00</strong></div>
+        <div><span class="swatch released"></span>Yield released <strong>$3.00</strong></div>
+        <div><span class="swatch spent"></span>Yield spent <strong>$1.00</strong></div>
+        <div><span class="swatch remaining"></span>Yield still spendable <strong>$2.00</strong></div>
+      </div>
+      <p class="meter-note">
+        The agent can only operate inside released yield. Requests that exceed the active lease or daily envelope are resized or blocked before any X Layer execution path is reached.
+      </p>
+      <div class="remaining-track">
+        <div class="remaining-fill" style="width:11.883541295306003%"></div>
+      </div>
+    </div>
+  
+        </section>
+
+        <section class="detail-grid">
+          <article class="panel" id="boundary">
+            <div class="section-label">Charter Envelope</div>
+            <h3>Human treasury policy</h3>
+            <p class="subcopy">
+              The charter defines which capital layer can move, which consumer can act, and how much operating budget can ever be exposed.
+            </p>
+            <div class="data-grid">
+              <div class="data-card"><div class="k">Charter Id</div><div class="v mono">charter_ea21614c-3999-465a-89fe-f6209c0b723e</div></div>
+              <div class="data-card"><div class="k">Lease Id</div><div class="v mono">lease_fc721978-9dac-4a36-b91b-e5d23ad9f927</div></div>
+              <div class="data-card"><div class="k">Consumer</div><div class="v">yield-ops-agent</div></div>
+              <div class="data-card"><div class="k">Wallet</div><div class="v mono">Shared Agentic Wallet flow</div></div>
+              <div class="data-card"><div class="k">Yield Source</div><div class="v">xlayer-yield-buffer</div></div>
+              <div class="data-card"><div class="k">Budget Ceiling</div><div class="v">$3.00 daily / $1.00 per tx</div></div>
+            </div>
+            <ul class="list-block">
+              <li>Allowed assets: USDT0, USDC, OKB</li>
+              <li>Allowed protocols: okx-aggregator, quickswap</li>
+              <li>Actions: buy, sell, rebalance</li>
+              <li>Trust requirements: reason required, proof required</li>
+            </ul>
+          </article>
+
+          <article class="panel" id="request">
+            <div class="section-label">Request And Route</div>
+            <h3>Latest agent intent</h3>
+            <p class="subcopy">The agent submits a treasury action against the active lease. The policy engine may allow it, resize it, require review, or block it before any spend path is taken.</p>
+            <div class="data-grid">
+              <div class="data-card"><div class="k">Action</div><div class="v">Rebalance</div></div>
+              <div class="data-card"><div class="k">Asset Pair</div><div class="v">USDT0/OKB</div></div>
+              <div class="data-card"><div class="k">Requested</div><div class="v">$3.23</div></div>
+              <div class="data-card"><div class="k">Final Notional</div><div class="v">$1.00</div></div>
+            </div>
+            <div class="mini-pill-row"><span class="mini-pill">Action Rebalance</span><span class="mini-pill">Venue okx-aggregator</span><span class="mini-pill">Counterparty okx-aggregator</span><span class="mini-pill">Trust zone Yellow</span><span class="mini-pill">Policy Yield Resize</span></div>
+            <p class="helper"><strong>Reason:</strong> USDT0 is underweight and OKB is overweight relative to the office target allocation. Spend is constrained to released yield only.</p>
+            <p class="helper"><strong>Rationale:</strong> Charter allowed the request but resized it to stay inside released yield and route quality limits.</p>
+          </article>
+        </section>
+
+        <section class="detail-grid">
+          <article class="panel" id="checks">
+            <div class="section-label">Pre-Execution Policy Engine</div>
+            <h3>Checks before any spend</h3>
+            <p class="subcopy">This is the actual governance edge. Budget, route quality, asset scope, counterparty scope, and operator state are evaluated before execution is permitted.</p>
+            <div class="check-grid">
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Operator mode</span>
+          </div>
+          <p>operator=active</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Lease status</span>
+          </div>
+          <p>status=active</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Lease expiry</span>
+          </div>
+          <p>expiresAt=2026-04-14T14:02:19.316Z</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Wallet scope</span>
+          </div>
+          <p>unscoped</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Reason required</span>
+          </div>
+          <p>reason present</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Action allowlist</span>
+          </div>
+          <p>action=rebalance</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Asset allowlist</span>
+          </div>
+          <p>OKB-&gt;USDT0</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Protocol allowlist</span>
+          </div>
+          <p>venue=okx-aggregator</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Counterparty allowlist</span>
+          </div>
+          <p>counterparty=okx-aggregator</p>
+        </article>
+      
+        <article class="check-card fail">
+          <div class="check-topline">
+            <span class="check-icon">BLOCK</span>
+            <span class="check-label">Per-tx budget</span>
+          </div>
+          <p>request=$3.23 / limit=$1</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Daily budget</span>
+          </div>
+          <p>remaining=$2.00</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Yield budget</span>
+          </div>
+          <p>remaining_yield=$3.00</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Route available</span>
+          </div>
+          <p>route ready</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Price impact</span>
+          </div>
+          <p>impact=-0.08% / max=2%</p>
+        </article>
+      
+        <article class="check-card ok">
+          <div class="check-topline">
+            <span class="check-icon">PASS</span>
+            <span class="check-label">Token safety</span>
+          </div>
+          <p>token scan passed</p>
+        </article>
+      </div>
+          </article>
+
+          <article class="panel" id="receipt">
+            <div class="section-label">Receipt And Evidence</div>
+            <h3>What happened after the decision</h3>
+            <p class="subcopy">Every round produces an inspectable receipt packet so judges can see whether the request was blocked, resized, simulated, or broadcasted onchain.</p>
+            <div class="receipt-grid">
+              <div class="receipt-box"><div class="k">Execution Status</div><div class="v">Broadcasted</div></div>
+              <div class="receipt-box"><div class="k">Capital Layer</div><div class="v">Yield</div></div>
+              <div class="receipt-box"><div class="k">Spent</div><div class="v">$1.00</div></div>
+              <div class="receipt-box"><div class="k">24H Spent</div><div class="v">$1.00</div></div>
+              <div class="receipt-box"><div class="k">Receipts 24H</div><div class="v">2</div></div>
+              <div class="receipt-box"><div class="k">Round Timestamp</div><div class="v">2026-04-13T14:10:08.584Z</div></div>
+            </div>
+            <div class="data-grid">
+              <div class="data-card"><div class="k">Tx Hash</div><div class="v mono">0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0</div></div>
+              <div class="data-card"><div class="k">Explorer</div><div class="v"><a href="https://www.oklink.com/xlayer/tx/0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0">Open transaction</a></div></div>
+            </div>
+            <p class="helper"><strong>Execution note:</strong> Executed OKB -&gt; USDT0 using released yield budget via QuickSwap V3 -&gt; CurveNG.</p>
+            <p class="helper"><strong>Receipt note:</strong> Executed OKB -&gt; USDT0 using released yield budget via QuickSwap V3 -&gt; CurveNG.</p>
+          </article>
+        </section>
+
+        <section class="panel" id="rounds" style="margin-top: 18px;">
+          <div class="section-label">Audit Trail</div>
+          <h3>Recent charter rounds</h3>
+          <p class="subcopy">The system keeps a rolling history of recent rounds so treasury owners can inspect how often the agent tried to spend, what happened, and which rounds reached transaction broadcast.</p>
           <table>
-            <thead><tr><th>Field</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Charter ID</td><td class="mono">charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0</td></tr>
-              <tr><td>Consumer</td><td>yield-ops-agent</td></tr>
-              <tr><td>Wallet</td><td class="mono">unscoped</td></tr>
-              <tr><td>Source mode</td><td>declared_release</td></tr>
-              <tr><td>Yield source</td><td>xlayer-yield-buffer</td></tr>
-              <tr><td>Principal floor</td><td>$4.00</td></tr>
-              <tr><td>Released yield</td><td>$3.00</td></tr>
-            </tbody>
-          </table>
-        </article>
-
-        <article class="panel span-4">
-          <h2>Yield Ledger</h2>
-          <p><strong>Treasury:</strong> $11.80</p>
-          <p><strong>Treasury buffer:</strong> $7.80</p>
-          <p><strong>Accrued yield:</strong> $7.80</p>
-          <p><strong>Harvested yield:</strong> $3.00</p>
-          <p><strong>Spent yield:</strong> $0.00</p>
-          <p><strong>Remaining:</strong> $3.00</p>
-        </article>
-
-        <article class="panel span-6">
-          <h2>Execution Lease</h2>
-          <p><strong>Lease ID:</strong> <span class="mono">lease_3b135e2b-110d-432d-824b-a7ee0b54deb8</span></p>
-          <p><strong>Budget:</strong> $1 per tx / $3 per day</p>
-          <p><strong>Assets:</strong> USDT0, USDC, OKB</p>
-          <p><strong>Protocols:</strong> okx-aggregator, quickswap</p>
-          <p><strong>Expires:</strong> 2026-04-13T08:49:36.238Z</p>
-        </article>
-
-        <article class="panel span-6">
-          <h2>Latest Request</h2>
-          <p><strong>USDT0/OKB</strong></p>
-          <p>Action: rebalance</p>
-          <p>Venue: okx-aggregator</p>
-          <p>Requested: $1.68</p>
-          <p>Final: $1</p>
-          <p>USDT0 is underweight and OKB is overweight relative to the office target allocation. Spend is constrained to released yield only.</p>
-        </article>
-
-        <article class="panel span-6">
-          <h2>Checks</h2>
-          <table>
-            <thead><tr><th>Check</th><th>Status</th><th>Note</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Generated</th>
+                <th>Outcome</th>
+                <th>Tx</th>
+                <th>Summary</th>
+              </tr>
+            </thead>
             <tbody>
         <tr>
-          <td>Operator mode</td>
-          <td>pass</td>
-          <td>operator=active</td>
+          <td>2026-04-13T14:10:08.584Z</td>
+          <td><span class="table-pill">Resize</span></td>
+          <td class="mono">0x15cca235...2aa321d0</td>
+          <td>product=xlayer-yield-charter | operator=active | charter=charter_ea21614c-3999-465a-89fe-f6209c0b723e | lease=lease_fc721978-9dac-4a36-b91b-e5d23ad9f927 | outcome=resize | zone=yellow | notional=1 | yield_remaining=2.00 | tx=0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0</td>
         </tr>
       
         <tr>
-          <td>Lease status</td>
-          <td>pass</td>
-          <td>status=active</td>
+          <td>2026-04-13T14:02:29.615Z</td>
+          <td><span class="table-pill">Resize</span></td>
+          <td class="mono">none</td>
+          <td>product=xlayer-yield-charter | operator=active | charter=charter_ea21614c-3999-465a-89fe-f6209c0b723e | lease=lease_fc721978-9dac-4a36-b91b-e5d23ad9f927 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
         </tr>
       
         <tr>
-          <td>Lease expiry</td>
-          <td>pass</td>
-          <td>expiresAt=2026-04-13T08:49:36.238Z</td>
+          <td>2026-04-13T14:01:54.313Z</td>
+          <td><span class="table-pill">Resize</span></td>
+          <td class="mono">none</td>
+          <td>product=xlayer-yield-charter | operator=active | charter=charter_37db14f1-f1ca-40b3-afdc-ecd8e902dd58 | lease=lease_d6100a43-bcef-41fb-8e8a-3f2f44830cfd | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
         </tr>
       
-        <tr>
-          <td>Wallet scope</td>
-          <td>pass</td>
-          <td>unscoped</td>
-        </tr>
-      
-        <tr>
-          <td>Reason required</td>
-          <td>pass</td>
-          <td>reason present</td>
-        </tr>
-      
-        <tr>
-          <td>Action allowlist</td>
-          <td>pass</td>
-          <td>action=rebalance</td>
-        </tr>
-      
-        <tr>
-          <td>Asset allowlist</td>
-          <td>pass</td>
-          <td>OKB-&gt;USDT0</td>
-        </tr>
-      
-        <tr>
-          <td>Protocol allowlist</td>
-          <td>pass</td>
-          <td>venue=okx-aggregator</td>
-        </tr>
-      
-        <tr>
-          <td>Counterparty allowlist</td>
-          <td>pass</td>
-          <td>counterparty=okx-aggregator</td>
-        </tr>
-      
-        <tr>
-          <td>Per-tx budget</td>
-          <td>fail</td>
-          <td>request=$1.68 / limit=$1</td>
-        </tr>
-      
-        <tr>
-          <td>Daily budget</td>
-          <td>pass</td>
-          <td>remaining=$3.00</td>
-        </tr>
-      
-        <tr>
-          <td>Yield budget</td>
-          <td>pass</td>
-          <td>remaining_yield=$3.00</td>
-        </tr>
-      
-        <tr>
-          <td>Route available</td>
-          <td>pass</td>
-          <td>route ready</td>
-        </tr>
-      
-        <tr>
-          <td>Price impact</td>
-          <td>pass</td>
-          <td>impact=0.35% / max=2%</td>
-        </tr>
-      
-        <tr>
-          <td>Token safety</td>
-          <td>pass</td>
-          <td>token scan passed</td>
-        </tr>
-      </tbody>
-          </table>
-        </article>
-
-        <article class="panel span-6">
-          <h2>Receipt</h2>
-          <p><strong>Status:</strong> recorded</p>
-          <p><strong>Capital layer:</strong> none</p>
-          <p><strong>Spent:</strong> $0.00</p>
-          <p><strong>Tx:</strong> <span class="mono">none</span></p>
-          <p><strong>Explorer:</strong> none</p>
-          <p><strong>Note:</strong> Charter decision passed, but execution mode is simulate or live treasury is unavailable.</p>
-        </article>
-
-        <article class="panel span-12">
-          <h2>Recent Charter Rounds</h2>
-          <table>
-            <thead><tr><th>Generated</th><th>Outcome</th><th>Tx</th><th>Summary</th></tr></thead>
-            <tbody>
         <tr>
           <td>2026-04-12T09:05:25.237Z</td>
-          <td>resize</td>
+          <td><span class="table-pill">Resize</span></td>
           <td class="mono">none</td>
           <td>product=xlayer-yield-charter | operator=active | charter=charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0 | lease=lease_3b135e2b-110d-432d-824b-a7ee0b54deb8 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
         </tr>
       
         <tr>
           <td>2026-04-12T08:49:38.451Z</td>
-          <td>resize</td>
+          <td><span class="table-pill">Resize</span></td>
           <td class="mono">none</td>
           <td>product=xlayer-yield-charter | operator=active | charter=charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0 | lease=lease_3b135e2b-110d-432d-824b-a7ee0b54deb8 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
         </tr>
       </tbody>
           </table>
-        </article>
-      </section>
+        </section>
+      </main>
     </div>
   </body>
 </html>

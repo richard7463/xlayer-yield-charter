@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-04-12T09:05:25.237Z",
+  "generatedAt": "2026-04-13T14:10:08.584Z",
   "product": "xlayer-yield-charter",
   "operator": {
     "operatorName": "human-treasury-owner",
     "mode": "active",
     "lastCommand": "resume",
     "note": "demo baseline",
-    "updatedAt": "2026-04-12T08:49:37.133Z"
+    "updatedAt": "2026-04-13T14:02:20.212Z"
   },
   "charter": {
-    "charterId": "charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0",
-    "issuedAt": "2026-04-12T08:49:35.028Z",
+    "charterId": "charter_ea21614c-3999-465a-89fe-f6209c0b723e",
+    "issuedAt": "2026-04-13T14:02:17.581Z",
     "status": "active",
     "ownerLabel": "human-treasury-owner",
     "consumerName": "yield-ops-agent",
@@ -25,49 +25,49 @@
     ]
   },
   "treasury": {
-    "timestamp": "2026-04-12T09:05:25.234Z",
+    "timestamp": "2026-04-13T14:10:06.595Z",
     "network": "xlayer-mainnet",
     "chainId": 196,
     "baseAsset": "USDT0",
-    "totalUsd": 11.8,
-    "liquidUsd": 11.799999999999999,
+    "totalUsd": 16.83,
+    "liquidUsd": 16.82557054,
     "capitalAtRiskUsd": 0,
     "balances": [
       {
         "symbol": "USDT0",
-        "amount": 5.4,
-        "usdValue": 5.4
+        "amount": 6.862458,
+        "usdValue": 6.86383049
       },
       {
         "symbol": "USDC",
-        "amount": 2.8,
-        "usdValue": 2.8
+        "amount": 6.102745,
+        "usdValue": 6.10195164
       },
       {
         "symbol": "OKB",
-        "amount": 0.029,
-        "usdValue": 3.6
+        "amount": 0.04651468324734719,
+        "usdValue": 3.85978841
       }
     ]
   },
   "yieldLedger": {
-    "updatedAt": "2026-04-12T09:05:25.238Z",
+    "updatedAt": "2026-04-13T14:10:12.626Z",
     "yieldSourceMode": "declared_release",
     "yieldSourceName": "xlayer-yield-buffer",
-    "treasuryUsd": 11.8,
+    "treasuryUsd": 16.83,
     "principalFloorUsd": 4,
-    "treasuryBufferUsd": 7.8,
-    "accruedYieldUsd": 7.8,
+    "treasuryBufferUsd": 12.83,
+    "accruedYieldUsd": 12.83,
     "releasedYieldUsd": 3,
     "harvestedYieldUsd": 3,
-    "spentYieldUsd": 0,
-    "spendableYieldUsd": 3,
-    "remainingYieldBudgetUsd": 3
+    "spentYieldUsd": 1,
+    "spendableYieldUsd": 2,
+    "remainingYieldBudgetUsd": 2
   },
   "lease": {
-    "leaseId": "lease_3b135e2b-110d-432d-824b-a7ee0b54deb8",
-    "issuedAt": "2026-04-12T08:49:36.237Z",
-    "expiresAt": "2026-04-13T08:49:36.238Z",
+    "leaseId": "lease_fc721978-9dac-4a36-b91b-e5d23ad9f927",
+    "issuedAt": "2026-04-13T14:02:19.314Z",
+    "expiresAt": "2026-04-14T14:02:19.316Z",
     "status": "active",
     "ownerLabel": "human-treasury-owner",
     "consumerName": "yield-ops-agent",
@@ -103,18 +103,18 @@
     ]
   },
   "request": {
-    "requestId": "req_024de6a3-68dd-47de-9a96-07d79463cce5",
-    "createdAt": "2026-04-12T09:05:25.236Z",
+    "requestId": "req_b85e7902-2dde-460c-a4d3-c44d20dcdff9",
+    "createdAt": "2026-04-13T14:10:06.599Z",
     "sourceProject": "yield-ops-agent",
     "consumerName": "yield-ops-agent",
-    "leaseId": "lease_3b135e2b-110d-432d-824b-a7ee0b54deb8",
+    "leaseId": "lease_fc721978-9dac-4a36-b91b-e5d23ad9f927",
     "action": "rebalance",
     "assetPair": "USDT0/OKB",
     "fromToken": "OKB",
     "toToken": "USDT0",
     "venueHint": "okx-aggregator",
     "counterparty": "okx-aggregator",
-    "notionalUsd": 1.68,
+    "notionalUsd": 3.23,
     "reason": "USDT0 is underweight and OKB is overweight relative to the office target allocation. Spend is constrained to released yield only."
   },
   "checks": [
@@ -134,7 +134,7 @@
       "id": "lease_expiry",
       "label": "Lease expiry",
       "ok": true,
-      "note": "expiresAt=2026-04-13T08:49:36.238Z"
+      "note": "expiresAt=2026-04-14T14:02:19.316Z"
     },
     {
       "id": "wallet_scope",
@@ -176,13 +176,13 @@
       "id": "per_tx_limit",
       "label": "Per-tx budget",
       "ok": false,
-      "note": "request=$1.68 / limit=$1"
+      "note": "request=$3.23 / limit=$1"
     },
     {
       "id": "daily_budget",
       "label": "Daily budget",
       "ok": true,
-      "note": "remaining=$3.00"
+      "note": "remaining=$2.00"
     },
     {
       "id": "yield_budget",
@@ -200,7 +200,7 @@
       "id": "price_impact",
       "label": "Price impact",
       "ok": true,
-      "note": "impact=0.35% / max=2%"
+      "note": "impact=-0.08% / max=2%"
     },
     {
       "id": "token_safety",
@@ -210,9 +210,9 @@
     }
   ],
   "usage": {
-    "startedAt": "2026-04-11T09:05:25.238Z",
-    "spent24hUsd": 0,
-    "remainingDailyUsd": 3,
+    "startedAt": "2026-04-12T14:10:12.555Z",
+    "spent24hUsd": 1,
+    "remainingDailyUsd": 1,
     "receiptCount24h": 2
   },
   "decision": {
@@ -220,25 +220,29 @@
     "trustZone": "yellow",
     "finalNotionalUsd": 1,
     "policyHits": [
-      "budget_resize"
+      "yield_resize"
     ],
     "rationale": "Charter allowed the request but resized it to stay inside released yield and route quality limits."
   },
   "execution": {
-    "status": "simulated",
+    "status": "broadcasted",
     "network": "xlayer-mainnet",
     "chainId": 196,
-    "note": "Charter decision passed, but execution mode is simulate or live treasury is unavailable."
+    "txHash": "0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0",
+    "explorerUrl": "https://www.oklink.com/xlayer/tx/0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0",
+    "note": "Executed OKB -> USDT0 using released yield budget via QuickSwap V3 -> CurveNG."
   },
   "receipt": {
-    "generatedAt": "2026-04-12T09:05:25.237Z",
-    "leaseId": "lease_3b135e2b-110d-432d-824b-a7ee0b54deb8",
-    "charterId": "charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0",
+    "generatedAt": "2026-04-13T14:10:08.584Z",
+    "leaseId": "lease_fc721978-9dac-4a36-b91b-e5d23ad9f927",
+    "charterId": "charter_ea21614c-3999-465a-89fe-f6209c0b723e",
     "consumerName": "yield-ops-agent",
-    "requestId": "req_024de6a3-68dd-47de-9a96-07d79463cce5",
-    "status": "recorded",
-    "capitalLayer": "none",
-    "spentUsd": 0,
-    "note": "Charter decision passed, but execution mode is simulate or live treasury is unavailable."
+    "requestId": "req_b85e7902-2dde-460c-a4d3-c44d20dcdff9",
+    "status": "broadcasted",
+    "capitalLayer": "yield",
+    "spentUsd": 1,
+    "txHash": "0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0",
+    "explorerUrl": "https://www.oklink.com/xlayer/tx/0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0",
+    "note": "Executed OKB -> USDT0 using released yield budget via QuickSwap V3 -> CurveNG."
   }
 }

@@ -3,123 +3,573 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>xlayer-yield-charter Submission Surface</title>
+    <title>Xlayer Yield Charter Submission Surface</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
     <style>
-      :root { --bg: #f5f1e8; --panel: #fffaf0; --ink: #1a1916; --muted: #656055; --line: #d7cfbe; --accent: #0f766e; }
+      :root {
+        --bg: #f2efe8;
+        --paper: #fcfaf4;
+        --paper-strong: #ffffff;
+        --ink: #101722;
+        --muted: #5f6d7d;
+        --line: rgba(16, 23, 34, 0.1);
+        --line-strong: rgba(16, 23, 34, 0.18);
+        --navy: #0f2236;
+        --cyan: #1a7daa;
+        --green: #21835d;
+        --amber: #a5651b;
+        --red: #b94b5c;
+      }
       * { box-sizing: border-box; }
-      body { margin: 0; font-family: Georgia, "Times New Roman", serif; color: var(--ink); background: radial-gradient(circle at top right, #fff5dc 0, transparent 36%), linear-gradient(180deg, #ede4d3 0%, var(--bg) 100%); }
-      .wrap { width: min(1220px, calc(100vw - 36px)); margin: 24px auto 56px; }
-      .hero, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 12px 36px rgba(40, 31, 15, 0.08); }
-      .hero { padding: 32px; }
-      .eyebrow { display: inline-block; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-      h1, h2 { margin: 0; }
-      h1 { margin-top: 16px; font-size: 48px; line-height: 0.95; }
-      h2 { font-size: 22px; margin-bottom: 12px; }
-      p, li { color: var(--muted); line-height: 1.6; }
-      .hero-grid, .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
-      .hero-grid { margin-top: 24px; }
-      .metric { grid-column: span 3; padding: 16px; border-radius: 18px; background: #fff; border: 1px solid var(--line); }
-      .metric .value { font-size: 28px; font-weight: 700; color: var(--accent); }
-      .metric .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-      .grid { margin-top: 18px; }
-      .panel { padding: 24px; }
-      .span-5 { grid-column: span 5; }
-      .span-6 { grid-column: span 6; }
-      .span-7 { grid-column: span 7; }
-      .span-12 { grid-column: 1 / -1; }
-      table { width: 100%; border-collapse: collapse; font-size: 14px; }
-      th, td { padding: 10px 8px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
-      th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
-      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
-      .link-row a { display: inline-block; margin-right: 10px; margin-bottom: 10px; padding: 10px 14px; border-radius: 999px; text-decoration: none; border: 1px solid var(--line); background: #fff; color: var(--ink); }
-      @media (max-width: 960px) { .metric, .span-5, .span-6, .span-7 { grid-column: 1 / -1; } h1 { font-size: 34px; } }
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 10%, rgba(26, 125, 170, 0.08), transparent 24%),
+          radial-gradient(circle at 86% 8%, rgba(165, 101, 27, 0.08), transparent 20%),
+          linear-gradient(180deg, #f7f4ee 0%, var(--bg) 100%);
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(16, 23, 34, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(16, 23, 34, 0.03) 1px, transparent 1px);
+        background-size: 28px 28px;
+        mask-image: linear-gradient(180deg, rgba(255,255,255,0.6), transparent 92%);
+      }
+      a { color: inherit; }
+      .page {
+        width: min(1440px, calc(100vw - 28px));
+        margin: 14px auto 32px;
+      }
+      .topbar,
+      .hero,
+      .feature,
+      .panel,
+      .capital-card,
+      .metric {
+        background: rgba(252, 250, 244, 0.84);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--line);
+        box-shadow: 0 18px 48px rgba(16, 23, 34, 0.08);
+      }
+      .topbar {
+        border-radius: 24px;
+        padding: 14px 18px;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+      }
+      .brand {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+      }
+      .brand-mark,
+      .eyebrow,
+      .status-pill,
+      .mini-link,
+      .card-topline,
+      .metric-label,
+      .section-label,
+      .table-pill,
+      th,
+      .stack-step {
+        font-family: "IBM Plex Mono", monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .brand-mark {
+        font-size: 12px;
+        color: var(--cyan);
+      }
+      .brand-title {
+        font: 700 24px/1 "Space Grotesk", sans-serif;
+      }
+      .topbar-links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .mini-link,
+      .status-pill,
+      .table-pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 9px 12px;
+        border: 1px solid var(--line-strong);
+        font-size: 11px;
+        text-decoration: none;
+      }
+      .mini-link { background: rgba(255,255,255,0.7); }
+      .status-pill.ok { color: var(--green); background: rgba(33, 131, 93, 0.08); }
+      .status-pill.warn { color: var(--amber); background: rgba(165, 101, 27, 0.08); }
+      .status-pill.fail { color: var(--red); background: rgba(185, 75, 92, 0.08); }
+      .hero {
+        margin-top: 16px;
+        border-radius: 32px;
+        padding: 26px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+        gap: 18px;
+        overflow: hidden;
+        position: relative;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto -150px -180px auto;
+        width: 420px;
+        height: 420px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(26, 125, 170, 0.14), transparent 70%);
+        pointer-events: none;
+        filter: blur(16px);
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--cyan);
+        font-size: 11px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(26, 125, 170, 0.18);
+        background: rgba(26, 125, 170, 0.08);
+      }
+      .hero h1,
+      .capital-card h2,
+      .panel h3 {
+        margin: 0;
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .hero h1 {
+        margin-top: 18px;
+        font-size: clamp(42px, 5vw, 76px);
+        line-height: 0.92;
+        max-width: 10ch;
+      }
+      .hero-copy {
+        margin: 18px 0 20px;
+        max-width: 64ch;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+      .status-row,
+      .metrics,
+      .feature-grid,
+      .panel-grid,
+      .capital-grid,
+      .data-grid,
+      .how-grid {
+        display: grid;
+        gap: 14px;
+      }
+      .status-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .metrics {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-top: 22px;
+      }
+      .metric {
+        border-radius: 22px;
+        padding: 18px;
+        background: rgba(255,255,255,0.86);
+      }
+      .metric-label {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .metric-value {
+        margin-top: 10px;
+        font: 700 30px/1 "Space Grotesk", sans-serif;
+      }
+      .metric-note {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .metric-value.cyan { color: var(--cyan); }
+      .metric-value.green { color: var(--green); }
+      .metric-value.amber { color: var(--amber); }
+      .capital-card {
+        border-radius: 28px;
+        padding: 22px;
+        background: linear-gradient(180deg, rgba(15, 34, 54, 0.97), rgba(11, 25, 41, 0.94));
+        color: #eef6ff;
+      }
+      .capital-card p,
+      .capital-card .capital-row {
+        color: rgba(238, 246, 255, 0.72);
+      }
+      .card-topline,
+      .section-label,
+      th { font-size: 11px; color: var(--muted); }
+      .capital-card .card-topline { color: rgba(105, 213, 255, 0.8); }
+      .capital-stack,
+      .remaining-bar {
+        overflow: hidden;
+        border-radius: 999px;
+      }
+      .capital-stack {
+        display: flex;
+        height: 16px;
+        margin-top: 18px;
+        background: rgba(255,255,255,0.08);
+      }
+      .band { height: 100%; }
+      .band.principal { background: linear-gradient(90deg, #213e60, #365d88); }
+      .band.released { background: linear-gradient(90deg, #2a8bb7, #63d4ff); }
+      .band.spent { background: linear-gradient(90deg, #cb8930, #f7bf66); }
+      .capital-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 16px;
+      }
+      .capital-row {
+        padding: 12px 0;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .capital-row strong { color: #ffffff; }
+      .swatch {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+      .swatch.principal { background: #365d88; }
+      .swatch.released { background: #63d4ff; }
+      .swatch.spent { background: #f7bf66; }
+      .swatch.remaining { background: #8eedc5; }
+      .remaining-bar {
+        margin-top: 16px;
+        height: 7px;
+        background: rgba(255,255,255,0.08);
+      }
+      .remaining-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #67dca8, #8eedc5);
+      }
+      .feature-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 18px;
+      }
+      .feature,
+      .panel { border-radius: 26px; padding: 22px; }
+      .feature h3,
+      .panel h3 { font-size: 24px; }
+      .feature p,
+      .panel p,
+      .panel li,
+      td { color: var(--muted); line-height: 1.62; }
+      .feature p,
+      .panel p { margin-bottom: 0; }
+      .panel-grid {
+        grid-template-columns: 1.08fr 0.92fr;
+        margin-top: 18px;
+      }
+      .stack-list {
+        margin: 16px 0 0;
+        display: grid;
+        gap: 12px;
+      }
+      .stack-step {
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(26, 125, 170, 0.06);
+        border: 1px solid rgba(26, 125, 170, 0.12);
+        color: var(--cyan);
+        font-size: 11px;
+      }
+      .how-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 18px;
+      }
+      .how-box {
+        padding: 16px;
+        border-radius: 20px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.65);
+      }
+      .data-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 18px;
+      }
+      .data-card {
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.68);
+      }
+      .data-card .k,
+      .mono {
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .data-card .k {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .data-card .v {
+        margin-top: 8px;
+        color: var(--ink);
+        word-break: break-word;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 12px 10px;
+        border-top: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .table-pill {
+        color: var(--cyan);
+        background: rgba(26, 125, 170, 0.08);
+      }
+      @media (max-width: 1120px) {
+        .hero,
+        .panel-grid,
+        .how-grid,
+        .feature-grid { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 900px) {
+        .status-row,
+        .metrics,
+        .capital-grid,
+        .data-grid { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 680px) {
+        .page { width: min(100vw - 18px, 100%); }
+        .topbar,
+        .hero,
+        .feature,
+        .panel,
+        .capital-card,
+        .metric { border-radius: 22px; }
+        .status-row,
+        .metrics,
+        .capital-grid,
+        .data-grid,
+        .topbar { grid-template-columns: 1fr; display: grid; }
+        .hero h1 { max-width: none; }
+      }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <section class="hero">
-        <div class="eyebrow">X Layer Human Track Submission</div>
-        <h1>xlayer-yield-charter</h1>
-        <p>
-          A human-defined treasury charter keeps principal locked, releases only harvested yield,
-          and lets the agent spend that released yield under a short-lived execution lease.
-        </p>
-        <div class="hero-grid">
-          <div class="metric"><div class="label">Principal floor</div><div class="value">$4.00</div></div>
-          <div class="metric"><div class="label">Released yield</div><div class="value">$3.00</div></div>
-          <div class="metric"><div class="label">Remaining yield</div><div class="value">$3.00</div></div>
-          <div class="metric"><div class="label">Execution</div><div class="value">simulated</div></div>
+    <div class="page">
+      <section class="topbar">
+        <div class="brand">
+          <span class="brand-mark">Build X · Human Track</span>
+          <span class="brand-title">Xlayer Yield Charter</span>
+        </div>
+        <div class="topbar-links">
+          <a class="mini-link" href="./proof-dashboard.html">Open Proof Dashboard</a>
+          <a class="mini-link" href="./live-proof-latest.json">Open Latest JSON</a>
+          <span class="status-pill ok">Execution Broadcasted</span>
         </div>
       </section>
 
-      <section class="grid">
-        <article class="panel span-7">
-          <h2>What This Project Is</h2>
-          <p>
-            This is a treasury primitive for autonomous agents. Humans keep principal control, publish a yield release,
-            and let agents operate only on the released operating budget.
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Treasury Primitive · Pre-Execution Control</div>
+          <h1>Give agents the yield. Keep the principal.</h1>
+          <p class="hero-copy">
+            X Layer Yield Charter is a treasury governance product for autonomous agents. A human treasury owner sets a principal floor, releases harvested yield as operating budget, then lets the agent trade or rebalance only inside that released envelope. If a request exceeds policy, the system resizes or blocks it before any spend happens.
           </p>
-          <ul>
-            <li>Principal floor is explicit and inspectable.</li>
-            <li>Released yield is separately budgeted from principal.</li>
-            <li>Execution is gated before funds move, not only logged after the fact.</li>
-            <li>Every spend carries reason, receipt, and optional onchain proof.</li>
-          </ul>
-        </article>
+          <div class="status-row">
+            <span class="status-pill ok">Network X Layer 196</span>
+            <span class="status-pill ok">Consumer yield-ops-agent</span>
+            <span class="status-pill warn">Decision Resize</span>
+            <span class="status-pill ok">Capital Yield</span>
+          </div>
+          <div class="metrics">
+            <article class="metric">
+              <div class="metric-label">Principal Floor</div>
+              <div class="metric-value cyan">$4.00</div>
+              <div class="metric-note">Locked treasury base</div>
+            </article>
+            <article class="metric">
+              <div class="metric-label">Released Yield</div>
+              <div class="metric-value green">$3.00</div>
+              <div class="metric-note">Operating budget made available</div>
+            </article>
+            <article class="metric">
+              <div class="metric-label">Remaining Yield</div>
+              <div class="metric-value amber">$2.00</div>
+              <div class="metric-note">Still spendable this round</div>
+            </article>
+            <article class="metric">
+              <div class="metric-label">Final Notional</div>
+              <div class="metric-value cyan">$1.00</div>
+              <div class="metric-note">Policy-adjusted request size</div>
+            </article>
+          </div>
+        </div>
+        
+    <div class="capital-card">
+      <div class="card-topline">Capital Boundary</div>
+      <h2>The operating budget is harvested yield, not treasury principal.</h2>
+      <p>
+        The charter separates locked principal from released yield. Every agent request is checked against that released budget before any route or swap path can be used.
+      </p>
+      <div class="capital-stack">
+        <span class="band principal" style="width:23.767082590612006%"></span>
+        <span class="band released" style="width:17.825311942959004%"></span>
+        <span class="band spent" style="width:5.9417706476530014%"></span>
+      </div>
+      <div class="capital-grid">
+        <div class="capital-row"><span class="swatch principal"></span>Principal floor<strong>$4.00</strong></div>
+        <div class="capital-row"><span class="swatch released"></span>Yield released<strong>$3.00</strong></div>
+        <div class="capital-row"><span class="swatch spent"></span>Yield spent<strong>$1.00</strong></div>
+        <div class="capital-row"><span class="swatch remaining"></span>Yield remaining<strong>$2.00</strong></div>
+      </div>
+      <div class="remaining-bar"><div class="remaining-fill" style="width:11.883541295306003%"></div></div>
+    </div>
+  
+      </section>
 
-        <article class="panel span-5">
-          <h2>Latest Round</h2>
-          <p><strong>Request:</strong> USDT0/OKB via okx-aggregator</p>
-          <p><strong>Requested:</strong> $1.68</p>
-          <p><strong>Final:</strong> $1</p>
-          <p><strong>Capital layer:</strong> none</p>
-          <p><strong>Rationale:</strong> Charter allowed the request but resized it to stay inside released yield and route quality limits.</p>
-          <div class="link-row" style="margin-top:14px;">
-            <a href="./proof-dashboard.html">Open Proof Dashboard</a>
-            <a href="./live-proof-latest.json">Open Latest JSON</a>
+      <section class="feature-grid">
+        <article class="feature">
+          <div class="card-topline">Why This Matters</div>
+          <h3>Agent spend should be capital-layer aware.</h3>
+          <p>
+            Most agent wallets expose raw balances. Yield Charter introduces a stronger boundary: principal stays protected while the agent uses only harvested and released yield.
+          </p>
+        </article>
+        <article class="feature">
+          <div class="card-topline">What Is New</div>
+          <h3>Governance sits before execution, not after.</h3>
+          <p>
+            Budget checks, route checks, protocol scope, counterparty scope, and operator posture are enforced before the execution path proceeds.
+          </p>
+        </article>
+        <article class="feature">
+          <div class="card-topline">Why X Layer</div>
+          <h3>Fits autonomous DeFi treasury operations.</h3>
+          <p>
+            The system is shaped for X Layer agent flows: treasury balances, agentic execution, route decisions, and inspectable proof packets that judges can read.
+          </p>
+        </article>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel">
+          <div class="section-label">Critical Path</div>
+          <h3>How a round actually works</h3>
+          <p>
+            The human defines the budget envelope once. The agent then operates inside that machine-readable policy, and every round produces a receipt and proof surface.
+          </p>
+          <div class="stack-list">
+            <div class="stack-step">1. Human issues charter with principal floor and released yield.</div>
+            <div class="stack-step">2. Human issues short-lived lease with asset, protocol, and budget scope.</div>
+            <div class="stack-step">3. Agent submits request against the active lease.</div>
+            <div class="stack-step">4. Policy engine checks operator state, budget, route, and safety.</div>
+            <div class="stack-step">5. Request is allowed, resized, or blocked before execution.</div>
+            <div class="stack-step">6. Receipt, JSON proof, and dashboard are written for inspection.</div>
           </div>
         </article>
 
-        <article class="panel span-6">
-          <h2>Charter + Lease</h2>
-          <p><strong>Charter ID:</strong> <span class="mono">charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0</span></p>
-          <p><strong>Lease ID:</strong> <span class="mono">lease_3b135e2b-110d-432d-824b-a7ee0b54deb8</span></p>
-          <p><strong>Wallet:</strong> <span class="mono">unscoped</span></p>
-          <p><strong>Yield source:</strong> xlayer-yield-buffer (declared_release)</p>
-          <p><strong>Lease budget:</strong> $1 per tx / $3 per day</p>
+        <article class="panel">
+          <div class="section-label">Latest Operating State</div>
+          <h3>Current round at a glance</h3>
+          <div class="data-grid">
+            <div class="data-card"><div class="k">Charter Id</div><div class="v mono">charter_ea21614c-3999-465a-89fe-f6209c0b723e</div></div>
+            <div class="data-card"><div class="k">Lease Id</div><div class="v mono">lease_fc721978-9dac-4a36-b91b-e5d23ad9f927</div></div>
+            <div class="data-card"><div class="k">Asset Pair</div><div class="v">USDT0/OKB</div></div>
+            <div class="data-card"><div class="k">Venue</div><div class="v">okx-aggregator</div></div>
+            <div class="data-card"><div class="k">Outcome</div><div class="v">Resize</div></div>
+            <div class="data-card"><div class="k">Tx Hash</div><div class="v mono">0x15cca235...2aa321d0</div></div>
+          </div>
+          <p><strong>Reason:</strong> USDT0 is underweight and OKB is overweight relative to the office target allocation. Spend is constrained to released yield only.</p>
+          <p><strong>Rationale:</strong> Charter allowed the request but resized it to stay inside released yield and route quality limits.</p>
         </article>
+      </section>
 
-        <article class="panel span-6">
-          <h2>How Judges Should Read It</h2>
-          <ul>
-            <li><strong>OnchainOS path:</strong> wallet, quote, route, and trade execution sit in the critical path.</li>
-            <li><strong>X Layer fit:</strong> charter, lease, and receipts are scoped to X Layer treasury operations.</li>
-            <li><strong>AI interaction:</strong> humans release yield budget; agents consume it inside a machine-readable envelope.</li>
-            <li><strong>Completeness:</strong> charter file, lease file, request, checks, receipt, proof dashboard, and submission page all exist.</li>
-          </ul>
-        </article>
+      <section class="panel" style="margin-top: 18px;">
+        <div class="section-label">Judge Readout</div>
+        <h3>What judges should immediately see</h3>
+        <div class="how-grid">
+          <div class="how-box">
+            <div class="card-topline">Human Governance Primitive</div>
+            <p>A treasury owner can define the principal floor, released yield, and who may consume the released budget.</p>
+          </div>
+          <div class="how-box">
+            <div class="card-topline">OnchainOS In Critical Path</div>
+            <p>Wallet state, route evaluation, execution routing, and proof surfaces sit in the decision flow instead of being decorative extras.</p>
+          </div>
+          <div class="how-box">
+            <div class="card-topline">Product Completeness</div>
+            <p>Charter issuance, lease issuance, live round execution, JSON proof, dashboard, submission page, and runbooks are all part of the repo.</p>
+          </div>
+        </div>
+      </section>
 
-        <article class="panel span-12">
-          <h2>Recent Charter Rounds</h2>
-          <table>
-            <thead><tr><th>Generated</th><th>Outcome</th><th>Tx</th><th>Summary</th></tr></thead>
-            <tbody>
+      <section class="panel" style="margin-top: 18px;">
+        <div class="section-label">Audit Trail</div>
+        <h3>Recent charter rounds</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Generated</th>
+              <th>Outcome</th>
+              <th>Tx</th>
+              <th>Summary</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td>2026-04-13T14:10:08.584Z</td>
+          <td><span class="table-pill">Resize</span></td>
+          <td class="mono">0x15cca235...2aa321d0</td>
+          <td>product=xlayer-yield-charter | operator=active | charter=charter_ea21614c-3999-465a-89fe-f6209c0b723e | lease=lease_fc721978-9dac-4a36-b91b-e5d23ad9f927 | outcome=resize | zone=yellow | notional=1 | yield_remaining=2.00 | tx=0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0</td>
+        </tr>
+      
+        <tr>
+          <td>2026-04-13T14:02:29.615Z</td>
+          <td><span class="table-pill">Resize</span></td>
+          <td class="mono">none</td>
+          <td>product=xlayer-yield-charter | operator=active | charter=charter_ea21614c-3999-465a-89fe-f6209c0b723e | lease=lease_fc721978-9dac-4a36-b91b-e5d23ad9f927 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
+        </tr>
+      
+        <tr>
+          <td>2026-04-13T14:01:54.313Z</td>
+          <td><span class="table-pill">Resize</span></td>
+          <td class="mono">none</td>
+          <td>product=xlayer-yield-charter | operator=active | charter=charter_37db14f1-f1ca-40b3-afdc-ecd8e902dd58 | lease=lease_d6100a43-bcef-41fb-8e8a-3f2f44830cfd | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
+        </tr>
+      
         <tr>
           <td>2026-04-12T09:05:25.237Z</td>
-          <td>resize</td>
+          <td><span class="table-pill">Resize</span></td>
           <td class="mono">none</td>
           <td>product=xlayer-yield-charter | operator=active | charter=charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0 | lease=lease_3b135e2b-110d-432d-824b-a7ee0b54deb8 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
         </tr>
       
         <tr>
           <td>2026-04-12T08:49:38.451Z</td>
-          <td>resize</td>
+          <td><span class="table-pill">Resize</span></td>
           <td class="mono">none</td>
           <td>product=xlayer-yield-charter | operator=active | charter=charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0 | lease=lease_3b135e2b-110d-432d-824b-a7ee0b54deb8 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
         </tr>
       </tbody>
-          </table>
-        </article>
+        </table>
       </section>
     </div>
   </body>

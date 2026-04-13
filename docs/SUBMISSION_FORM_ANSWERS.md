@@ -64,4 +64,4 @@ Fill after posting.
 3. Run `npm run round:live`.
 4. Show the request being resized to stay inside released yield.
 5. Open `examples/live-proof-latest.json` and the proof dashboard.
-6. Explain that live mode can broadcast through Agentic Wallet, while sample mode proves policy and receipt flow.
+6. Explain that the current repo now includes a broadcasted live yield-funded swap and public proof links.

@@ -1,107 +1,220 @@
+<p align="center">
+  <img src="docs/assets/submission-hero.png" alt="X Layer Yield Charter submission surface" width="920" />
+</p>
+
 # X Layer Yield Charter
 
-![Track](https://img.shields.io/badge/Track-Human%20Track%20%7C%20X%20Layer%20Arena-0f766e)
-![Theme](https://img.shields.io/badge/Theme-DeFi%20Treasury%20Primitive-111827)
-![Boundary](https://img.shields.io/badge/Boundary-Principal%20Locked%20%7C%20Yield%20Spendable-c2410c)
-![Network](https://img.shields.io/badge/Network-X%20Layer%20Mainnet%20196-2563eb)
-![Status](https://img.shields.io/badge/Status-Executable%20Proof%20Demo-success)
+<p align="center">
+  <a href="https://yield-charter.vercel.app"><img alt="Live App" src="https://img.shields.io/badge/Live%20App-Vercel-black"></a>
+  <a href="https://yield-charter.vercel.app/proof-dashboard.html"><img alt="Proof Dashboard" src="https://img.shields.io/badge/Proof-Dashboard-0f766e"></a>
+  <a href="https://www.oklink.com/xlayer/tx/0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0"><img alt="Live Tx" src="https://img.shields.io/badge/Live%20Tx-Yield%20Broadcasted-success"></a>
+  <img alt="Track" src="https://img.shields.io/badge/Track-Build%20X%20Human%20Track-111827">
+  <img alt="Arena" src="https://img.shields.io/badge/Arena-X%20Layer%20Arena-2563eb">
+  <img alt="Network" src="https://img.shields.io/badge/Network-X%20Layer%20196-1d4ed8">
+  <img alt="Boundary" src="https://img.shields.io/badge/Boundary-Principal%20Locked%20%7C%20Yield%20Spendable-c2410c">
+</p>
 
-Principal-locked operating budget for autonomous agents on X Layer.
+> Treasury primitive for autonomous agents on X Layer: keep principal locked, release harvested yield, and let the agent operate only inside that released budget.
 
-> Let agents spend yield, not principal.
+## 30-Second Pitch
 
-## Judge Summary
+Most agent wallets force an unsafe choice:
 
-| What judges should look for | Evidence |
+1. give the agent broad wallet access, or
+2. manually approve every action.
+
+`X Layer Yield Charter` creates a third mode.
+
+A human treasury owner sets a principal floor, releases harvested yield as the operating budget, and issues a short-lived execution lease. The agent can trade or rebalance only inside that released yield envelope. If a request exceeds budget, route, or policy constraints, the system resizes or blocks it before execution.
+
+This is not a bot dashboard. It is a treasury governance primitive for the agent economy.
+
+## For Hackathon Judges
+
+| Item | Link / Evidence |
 | --- | --- |
-| Human governance primitive | A human-defined charter sets principal floor, released yield, wallet scope, protocol scope, and operator mode. |
-| DeFi-native X Layer fit | The project models agent operating budgets as harvested yield, not generic wallet allowance. |
-| OnchainOS / Agentic Wallet path | Runtime uses wallet balance reads, route quotes, token safety checks, and optional live swap execution through the shared Agentic Wallet flow. |
-| AI interaction experience | Agents receive a machine-readable budget boundary and get resized / blocked before execution. |
-| Product completeness | CLI scripts, policy engine, proof JSON, proof dashboard, submission page, systemd templates, and OpenClaw runbook are included. |
+| Live app | [yield-charter.vercel.app](https://yield-charter.vercel.app) |
+| Live proof dashboard | [yield-charter.vercel.app/proof-dashboard.html](https://yield-charter.vercel.app/proof-dashboard.html) |
+| Latest proof JSON | [yield-charter.vercel.app/live-proof-latest.json](https://yield-charter.vercel.app/live-proof-latest.json) |
+| GitHub repo | [richard7463/xlayer-yield-charter](https://github.com/richard7463/xlayer-yield-charter) |
+| Track | Build X Human Track / X Layer Arena |
+| Treasury wallet | `0xdbc8e35ea466f85d57c0cc1517a81199b8549f04` |
+| Latest live tx | [`0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0`](https://www.oklink.com/xlayer/tx/0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0) |
+| Capital layer proof | `receipt.capitalLayer = "yield"` in latest proof packet |
+| Demo and submission docs | [`docs/DEMO_VIDEO_SCRIPT.md`](docs/DEMO_VIDEO_SCRIPT.md), [`docs/SUBMISSION_FORM_ANSWERS.md`](docs/SUBMISSION_FORM_ANSWERS.md) |
 
-## One-Line Pitch
+## Scorecard
 
-X Layer Yield Charter lets a human treasury owner keep principal locked while autonomous agents spend only harvested and released yield.
+This section maps the Build X judging dimensions to concrete repo and live evidence.
 
-## Why This Matters
 
-Autonomous agents can trade, rebalance, pay for services, and call APIs. The dangerous part is not autonomy itself. The dangerous part is giving an agent unconstrained wallet access.
+| Build X dimension | Why this project fits | Repo / live evidence |
+| --- | --- | --- |
+| OnchainOS integration and innovation | Uses Agentic Wallet balance reads, live route quotes, token safety checks, and live swap execution in the control path. | [`src/onchainos/cli.ts`](src/onchainos/cli.ts), [`src/portfolio/manager.ts`](src/portfolio/manager.ts) |
+| X Layer ecosystem integration | Runs on chain `196`, uses X Layer treasury state, and broadcasts a real yield-funded trade on X Layer mainnet. | [latest tx proof](https://www.oklink.com/xlayer/tx/0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0) |
+| AI interactive experience | Human defines machine-readable treasury boundaries; the agent receives a budget envelope and gets resized or blocked before execution. | [`src/runtime/yield-charter-agent.ts`](src/runtime/yield-charter-agent.ts) |
+| Product completeness | Includes runtime, policy engine, live proof packet, proof dashboard, submission page, server timer templates, and deployment runbooks. | [`deploy/systemd/`](deploy/systemd/), [`docs/OPENCLAW_RUNBOOK.md`](docs/OPENCLAW_RUNBOOK.md) |
 
-Yield Charter changes the default boundary:
+## Live Proof Snapshot
 
-```text
-principal stays owned by the human
-harvested yield becomes the agent operating budget
-agent requests pass through policy checks before funds move
-receipts prove what happened
-```
+This snapshot is from the latest locally broadcasted live round on **2026-04-13 14:10:08 UTC**.
 
-That makes it closer to a DeFi treasury primitive than a normal bot dashboard.
+| Metric | Value |
+| --- | --- |
+| Treasury value | `$16.83` |
+| Principal floor | `$4.00` |
+| Released yield | `$3.00` |
+| Yield spent | `$1.00` |
+| Remaining yield budget | `$2.00` |
+| Latest request | `USDT0/OKB` rebalance |
+| Requested notional | `$3.23` |
+| Final notional | `$1.00` |
+| Decision | `resize` |
+| Execution status | `broadcasted` |
+| Capital layer | `yield` |
+| Route | `QuickSwap V3 -> CurveNG` |
+| Latest tx | [`0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0`](https://www.oklink.com/xlayer/tx/0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0) |
+| Latest JSON proof | [yield-charter.vercel.app/live-proof-latest.json](https://yield-charter.vercel.app/live-proof-latest.json) |
 
-## Latest Proof Snapshot
+## Screenshots
 
-Current committed sample proof comes from `npm run round:live` in sample mode.
+### Submission Surface
 
 ![Submission surface](docs/assets/submission-hero.png)
 
-| Field | Value |
-| --- | --- |
-| Product | `xlayer-yield-charter` |
-| Network | X Layer mainnet profile, chain ID `196` |
-| Principal floor | `$4.00` |
-| Released yield | `$3.00` |
-| Remaining yield budget | `$3.00` |
-| Latest request | `OKB -> USDT0` rebalance |
-| Requested notional | `$1.68` |
-| Final notional | `$1.00` |
-| Decision | `resize` |
-| Capital layer | `none` in sample mode, `yield` when live execution broadcasts |
-| Latest proof JSON | [`examples/live-proof-latest.json`](examples/live-proof-latest.json) |
-| Proof dashboard | [`examples/proof-dashboard.sample.html`](examples/proof-dashboard.sample.html) |
-| Submission page | [`examples/submission.sample.html`](examples/submission.sample.html) |
+### Proof Dashboard
 
 ![Proof dashboard](docs/assets/proof-dashboard-hero.png)
 
-## Product Flow
+## Why This Is Different
 
-```text
-human treasury owner
-  -> sets principal floor
-  -> releases harvested yield budget
-  -> issues execution lease
-  -> agent proposes spend / rebalance
-  -> charter checks yield budget
-  -> lease checks wallet, asset, protocol, counterparty, budget, route, token risk
-  -> request is approved, resized, blocked, or sent to review
-  -> receipt + proof packet are written
+| Old way | Yield Charter |
+| --- | --- |
+| Give the agent raw wallet balance | Split capital into principal floor and released yield |
+| Approve or reject after the trade | Gate budget, route, token, protocol, and counterparty before execution |
+| Generic wallet allowance | Capital-layer-aware treasury boundary |
+| Hard to prove what budget the agent actually used | Receipt explicitly records `capitalLayer`, `spentUsd`, `txHash`, and proof packet |
+| A bot feature | A reusable treasury operating primitive |
+
+## Product Surface
+
+### 1. Human Treasury Charter
+
+The human owner defines:
+
+- principal floor
+- released yield budget
+- treasury operator mode
+- spend asset and yield source semantics
+
+### 2. Execution Lease
+
+The lease defines the agent's operating envelope:
+
+- per-tx budget
+- daily budget
+- allowed assets
+- allowed protocols
+- allowed counterparties
+- expiry window
+- proof requirement
+
+### 3. Pre-Execution Policy Engine
+
+Before any execution path is used, the runtime checks:
+
+- operator mode
+- lease status and expiry
+- wallet scope
+- reason presence
+- asset / action / protocol / counterparty allowlists
+- per-tx and daily budgets
+- released yield remaining
+- route availability
+- price impact
+- token safety
+
+### 4. Proof And Receipt Layer
+
+Every round writes:
+
+- `live-proof-latest.json`
+- `proof-dashboard.html`
+- `submission.html`
+- rolling `rounds/*.json`
+- receipt records with tx and capital layer evidence
+
+## Architecture
+
+```mermaid
+flowchart LR
+    H[Human Treasury Owner] --> C[Yield Charter]
+    H --> L[Execution Lease]
+    C --> R[Yield Charter Runtime]
+    L --> R
+    R --> P[Policy Engine]
+    R --> M[Portfolio Manager]
+    M --> O[OnchainOS / Agentic Wallet]
+    O --> X[X Layer DEX Routes]
+    P --> A[Proof Packet + Receipt]
+    X --> A
 ```
 
-## Implemented Modules
+## Runtime Sequence
 
-| Module | Path | Purpose |
-| --- | --- | --- |
-| Runtime agent | [`src/runtime/yield-charter-agent.ts`](src/runtime/yield-charter-agent.ts) | Runs a charter round, builds candidate spend, gates execution, writes proof. |
-| Charter policy | [`src/charter/policy.ts`](src/charter/policy.ts) | Issues the principal floor and released-yield charter. |
-| Yield ledger | [`src/charter/ledger.ts`](src/charter/ledger.ts) | Computes accrued, harvested, spent, and remaining yield budget. |
-| Lease gate | [`src/lease/policy.ts`](src/lease/policy.ts) | Enforces pre-execution controls including yield budget, per-tx, daily budget, route, and token safety. |
-| OnchainOS client | [`src/onchainos/cli.ts`](src/onchainos/cli.ts) | Loads local env/proxy and calls OnchainOS wallet, quote, swap, and security commands. |
-| Portfolio manager | [`src/portfolio/manager.ts`](src/portfolio/manager.ts) | Reads balances, detects allocation drift, quotes candidates, and executes swaps. |
-| Proof surfaces | [`src/historian`](src/historian) | Generates JSON proof, dashboard HTML, and submission HTML. |
+```mermaid
+sequenceDiagram
+    participant H as Human Owner
+    participant C as Charter + Lease
+    participant A as Yield Agent
+    participant O as OnchainOS
+    participant X as X Layer DEX
+    participant P as Proof Layer
 
-## OnchainOS Usage
+    H->>C: set principal floor + released yield
+    H->>C: issue short-lived lease
+    A->>O: read treasury balances
+    A->>A: build rebalance candidate
+    A->>O: fetch route quote + token safety
+    A->>C: evaluate request against policy
+    C-->>A: approve / resize / block
+    alt approved or resized
+        A->>O: execute live swap
+        O->>X: broadcast on X Layer
+        X-->>O: tx hash
+        O-->>P: execution result
+    else blocked
+        C-->>P: blocked receipt
+    end
+    P-->>H: JSON proof + dashboard + receipt
+```
 
-The runtime is built to use these OnchainOS / Agentic Wallet capabilities:
+## Repository Map
+
+| Path | Responsibility |
+| --- | --- |
+| [`src/runtime/yield-charter-agent.ts`](src/runtime/yield-charter-agent.ts) | Orchestrates the full charter round |
+| [`src/charter/`](src/charter) | Principal floor, released yield, yield ledger |
+| [`src/lease/`](src/lease) | Pre-execution lease policy and receipt storage |
+| [`src/portfolio/`](src/portfolio) | Balance reads, allocation drift, quote, execution |
+| [`src/onchainos/`](src/onchainos) | OnchainOS / Agentic Wallet CLI integration |
+| [`src/historian/`](src/historian) | Submission page and proof dashboard rendering |
+| [`scripts/`](scripts) | Local / live commands |
+| [`deploy/systemd/`](deploy/systemd) | Server timer templates |
+| [`docs/`](docs) | Architecture, runbooks, demo script, submission copy |
+| [`examples/`](examples) | Committed proof JSON and HTML snapshots |
+
+## OnchainOS / Agentic Wallet Integration
 
 | Capability | How it is used |
 | --- | --- |
-| Agentic Wallet balance | Reads X Layer wallet state before each round. |
-| DEX quote / route | Verifies that a spend or rebalance route exists before approval. |
-| Swap execution | Optional live mode broadcasts the resized yield-funded swap. |
-| Token safety | Checks unknown target token risk before execution. |
-| Proof / audit trail | Every decision is serialized into a proof packet and dashboard. |
+| Agentic Wallet balance | Reads the X Layer treasury wallet before every round. |
+| DEX quote | Verifies route availability and price impact before execution. |
+| Swap execution | Broadcasts the resized yield-funded swap in live mode. |
+| Token safety | Rejects unsafe or degraded target tokens. |
+| Proof path | Binds execution result to receipt and proof packet. |
 
-## Quick Start
+## Local Run
 
 ```bash
 npm install
@@ -112,18 +225,22 @@ npm run status:latest
 npm run demo:serve
 ```
 
-Open the local demo server printed by `npm run demo:serve`.
+Open the local proof site after `npm run demo:serve`.
 
 ## Live Mode
 
-Set these in `.env.local`:
+This repo now has a proven local live path. The latest live round broadcasted a yield-funded trade through OnchainOS on X Layer mainnet.
+
+Required env shape:
 
 ```bash
 CHARTER_EXECUTION_MODE=live
 XLAYER_TREASURY_ADDRESS=0xdbc8e35ea466f85d57c0cc1517a81199b8549f04
-XLAYER_SETTLEMENT_TOKEN_ADDRESS=0x74b7f16337b8972027f6196a17a631ac6de26d22
 CHARTER_PRINCIPAL_FLOOR_USD=4
-CHARTER_RELEASED_YIELD_USD=3
+CHARTER_RELEASED_YIELD_USD=2
+CHARTER_PER_TX_USD=0.5
+CHARTER_DAILY_BUDGET_USD=2
+ONCHAINOS_PROXY=http://127.0.0.1:7890   # local Mac only if needed
 ```
 
 Then run:
@@ -132,56 +249,36 @@ Then run:
 npm run preflight:treasury
 npm run charter:issue
 npm run lease:issue
+npm run operator:resume -- "live start"
 npm run round:live
 npm run status:latest
 ```
 
-For local machines that need a proxy, set `ONCHAINOS_PROXY=http://127.0.0.1:7890`. On OpenClaw/server deployment, leave proxy variables empty unless the server actually needs them.
+## Vercel Deployment
 
-## Why It Is Different
+The public proof surface is deployed from `data/yield-charter/` to Vercel.
 
-Most agent finance projects optimize for more autonomy. Yield Charter optimizes for safer autonomy:
+- Live app: [yield-charter.vercel.app](https://yield-charter.vercel.app)
+- Proof dashboard: [yield-charter.vercel.app/proof-dashboard.html](https://yield-charter.vercel.app/proof-dashboard.html)
+- Latest JSON: [yield-charter.vercel.app/live-proof-latest.json](https://yield-charter.vercel.app/live-proof-latest.json)
 
-- agents can operate without waiting for every manual click
-- principal remains outside the agent spending budget
-- every spend has reason, policy result, receipt, and proof
-- the budget is generated from yield, not raw treasury principal
+To redeploy:
 
-## Repository Layout
-
-```text
-src/
-  charter/       principal floor, yield release, yield ledger
-  lease/         pre-execution policy gate
-  runtime/       round runner and operator state
-  onchainos/     Agentic Wallet / OnchainOS CLI client
-  portfolio/     wallet, quote, route, and execution helpers
-  historian/     proof dashboard and submission page renderer
-scripts/         CLI entrypoints
-docs/            architecture, runbooks, scoring, submission answers
-examples/        committed proof JSON and HTML samples
-deploy/systemd/  OpenClaw/server timer templates
+```bash
+cd data/yield-charter
+vercel deploy --prod --scope ritsuyans-projects
 ```
 
-## Submission Docs
+## Submission Package
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - [`docs/SCORING_ALIGNMENT.md`](docs/SCORING_ALIGNMENT.md)
 - [`docs/DEMO_VIDEO_SCRIPT.md`](docs/DEMO_VIDEO_SCRIPT.md)
 - [`docs/OPENCLAW_RUNBOOK.md`](docs/OPENCLAW_RUNBOOK.md)
 - [`docs/SUBMISSION_FORM_ANSWERS.md`](docs/SUBMISSION_FORM_ANSWERS.md)
-- [`docs/SUBMISSION_CHECKLIST.md`](docs/SUBMISSION_CHECKLIST.md)
 - [`docs/X_POST_DRAFTS.md`](docs/X_POST_DRAFTS.md)
 - [`docs/REFERENCE_REPOS.md`](docs/REFERENCE_REPOS.md)
 
-## Current Scope
+## Team
 
-V1 is application-layer enforcement plus proof. It proves the operating model now:
-
-- principal floor is explicit
-- released yield is separately tracked
-- agent spend is capped to released yield
-- execution is pre-gated
-- proof and receipts are generated
-
-V2 should add a contract-native vault and direct yield-source adapters, but the current project is already runnable and judge-inspectable.
+Solo build in this repo, using shared X Layer wallet infrastructure already proven in adjacent projects inside the workspace.

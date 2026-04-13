@@ -19,7 +19,7 @@
 
 ## Nice To Have Before Final Submission
 
-- [ ] Run one live Agentic Wallet swap with `capitalLayer: "yield"`
+- [x] Run one live Agentic Wallet swap with `capitalLayer: "yield"`
 - [ ] Add direct OnchainOS DeFi position read as a yield source adapter
-- [ ] Deploy proof page to a public URL
-- [ ] Add README links to live deployment and X post
+- [x] Deploy proof page to a public URL
+- [x] Add README links to live deployment and current proof surface

@@ -117,8 +117,8 @@ function renderCapitalMeter(packet: ProofPacket): string {
     <div class="meter-card">
       <div class="meter-head">
         <div>
-          <div class="eyebrow">Capital Envelope</div>
-          <h2>Treasury boundary before execution</h2>
+          <div class="eyebrow">Treasury Rules</div>
+          <h2>Agent budget vs locked treasury</h2>
         </div>
         <div class="meter-total">${formatCompactUsd(packet.treasury.totalUsd)}</div>
       </div>
@@ -134,7 +134,7 @@ function renderCapitalMeter(packet: ProofPacket): string {
         <div><span class="swatch remaining"></span>Yield still spendable <strong>${formatUsd(packet.yieldLedger.remainingYieldBudgetUsd)}</strong></div>
       </div>
       <p class="meter-note">
-        The agent can only operate inside released yield. Requests that exceed the active lease or daily envelope are resized or blocked before any X Layer execution path is reached.
+        This is the product boundary. The agent only gets the released budget. If a request is too large or outside policy, it is resized or blocked before any X Layer execution path is reached.
       </p>
       <div class="remaining-track">
         <div class="remaining-fill" style="width:${remainingWidth}%"></div>
@@ -622,7 +622,7 @@ export function buildProofDashboardHtml(input: {
           <div class="brand-mark">X Layer Human Track</div>
           <h1>${escapeHtml(productName)}</h1>
           <p>
-            Treasury governance for autonomous agents. Principal remains locked. Released yield becomes the only spendable operating budget.
+            A treasury owner sets a safe spending budget for the agent while the rest of the wallet stays protected.
           </p>
         </div>
 
@@ -654,10 +654,10 @@ export function buildProofDashboardHtml(input: {
       <main class="main">
         <section class="hero">
           <div>
-            <div class="eyebrow">Control Tower · Pre-Execution Governance</div>
-            <h2>Let agents spend yield, not principal.</h2>
+            <div class="eyebrow">Agent Budget Guard · Live Console</div>
+            <h2>Give the agent a budget, not the whole wallet.</h2>
             <p class="narrative">
-              This proof surface shows a live treasury rule: a human treasury owner defines a principal floor, releases only harvested yield, then gives the agent a short-lived lease. Every X Layer request is checked against that envelope before execution is allowed.
+              This console shows a simple product rule: the treasury owner keeps control of principal, releases a smaller operating budget, and the agent can only act inside that budget. Every request is checked before money moves.
             </p>
             <div class="status-row">
               <span class="status-pill ok">Wallet scope ${escapeHtml(packet.charter.walletAddress ? "Scoped" : "Shared Flow")}</span>
@@ -693,10 +693,10 @@ export function buildProofDashboardHtml(input: {
 
         <section class="detail-grid">
           <article class="panel" id="boundary">
-            <div class="section-label">Charter Envelope</div>
-            <h3>Human treasury policy</h3>
+            <div class="section-label">Owner Settings</div>
+            <h3>The rules the owner gave the agent</h3>
             <p class="subcopy">
-              The charter defines which capital layer can move, which consumer can act, and how much operating budget can ever be exposed.
+              This is the product setup: how much money stays locked, how much budget is released, and what the agent is allowed to do with it.
             </p>
             <div class="data-grid">
               <div class="data-card"><div class="k">Charter Id</div><div class="v mono">${escapeHtml(packet.charter.charterId)}</div></div>
@@ -715,9 +715,9 @@ export function buildProofDashboardHtml(input: {
           </article>
 
           <article class="panel" id="request">
-            <div class="section-label">Request And Route</div>
-            <h3>Latest agent intent</h3>
-            <p class="subcopy">The agent submits a treasury action against the active lease. The policy engine may allow it, resize it, require review, or block it before any spend path is taken.</p>
+            <div class="section-label">Agent Request</div>
+            <h3>What the agent tried to do</h3>
+            <p class="subcopy">The agent asked to trade or rebalance. The system then decided whether the request should go through as-is, be resized, or be stopped.</p>
             <div class="data-grid">
               <div class="data-card"><div class="k">Action</div><div class="v">${escapeHtml(titleCase(packet.request.action))}</div></div>
               <div class="data-card"><div class="k">Asset Pair</div><div class="v">${escapeHtml(packet.request.assetPair)}</div></div>
@@ -732,16 +732,16 @@ export function buildProofDashboardHtml(input: {
 
         <section class="detail-grid">
           <article class="panel" id="checks">
-            <div class="section-label">Pre-Execution Policy Engine</div>
-            <h3>Checks before any spend</h3>
-            <p class="subcopy">This is the actual governance edge. Budget, route quality, asset scope, counterparty scope, and operator state are evaluated before execution is permitted.</p>
+            <div class="section-label">Decision Engine</div>
+            <h3>Checks before any money moves</h3>
+            <p class="subcopy">This is the core product behavior. The request does not get to spend first. Budget, route quality, scope, and safety are checked first.</p>
             <div class="check-grid">${renderChecks(packet)}</div>
           </article>
 
           <article class="panel" id="receipt">
-            <div class="section-label">Receipt And Evidence</div>
-            <h3>What happened after the decision</h3>
-            <p class="subcopy">Every round produces an inspectable receipt packet so judges can see whether the request was blocked, resized, simulated, or broadcasted onchain.</p>
+            <div class="section-label">Result</div>
+            <h3>What actually happened</h3>
+            <p class="subcopy">After the checks, the system records the outcome. You can see whether the request was blocked, resized, simulated, or actually broadcasted onchain.</p>
             <div class="receipt-grid">
               <div class="receipt-box"><div class="k">Execution Status</div><div class="v">${escapeHtml(titleCase(packet.execution.status))}</div></div>
               <div class="receipt-box"><div class="k">Capital Layer</div><div class="v">${escapeHtml(titleCase(packet.receipt.capitalLayer))}</div></div>
@@ -760,9 +760,9 @@ export function buildProofDashboardHtml(input: {
         </section>
 
         <section class="panel" id="rounds" style="margin-top: 18px;">
-          <div class="section-label">Audit Trail</div>
-          <h3>Recent charter rounds</h3>
-          <p class="subcopy">The system keeps a rolling history of recent rounds so treasury owners can inspect how often the agent tried to spend, what happened, and which rounds reached transaction broadcast.</p>
+          <div class="section-label">History</div>
+          <h3>Recent agent budget events</h3>
+          <p class="subcopy">The product keeps a rolling history so the owner can inspect how often the agent tried to use budget, what the system decided, and which requests reached onchain broadcast.</p>
           <table>
             <thead>
               <tr>

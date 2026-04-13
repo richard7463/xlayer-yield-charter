@@ -388,10 +388,10 @@
 
       <section class="hero">
         <div>
-          <div class="eyebrow">Treasury Primitive · Pre-Execution Control</div>
-          <h1>Give agents the yield. Keep the principal.</h1>
+          <div class="eyebrow">Agent Budget Guard · Treasury Product</div>
+          <h1>Set an agent budget without giving it your treasury.</h1>
           <p class="hero-copy">
-            X Layer Yield Charter is a treasury governance product for autonomous agents. A human treasury owner sets a principal floor, releases harvested yield as operating budget, then lets the agent trade or rebalance only inside that released envelope. If a request exceeds policy, the system resizes or blocks it before any spend happens.
+            X Layer Yield Charter is a product for people who want agents to trade or rebalance with real funds, but do not want those agents to control the whole wallet. You lock the principal, release a smaller operating budget, and the system allows, resizes, or blocks each request before money moves.
           </p>
           <div class="status-row">
             <span class="status-pill ok">Network X Layer 196</span>
@@ -424,10 +424,10 @@
         </div>
         
     <div class="capital-card">
-      <div class="card-topline">Capital Boundary</div>
-      <h2>The operating budget is harvested yield, not treasury principal.</h2>
+      <div class="card-topline">Treasury Rules</div>
+      <h2>Your agent gets a budget. Your treasury keeps control.</h2>
       <p>
-        The charter separates locked principal from released yield. Every agent request is checked against that released budget before any route or swap path can be used.
+        The product splits one wallet into two layers: untouchable principal and spendable agent budget. Every request is checked against that budget before any swap can happen.
       </p>
       <div class="capital-stack">
         <span class="band principal" style="width:23.767082590612006%"></span>
@@ -447,48 +447,48 @@
 
       <section class="feature-grid">
         <article class="feature">
-          <div class="card-topline">Why This Matters</div>
-          <h3>Agent spend should be capital-layer aware.</h3>
+          <div class="card-topline">Problem</div>
+          <h3>Today you either trust the agent too much or babysit every move.</h3>
           <p>
-            Most agent wallets expose raw balances. Yield Charter introduces a stronger boundary: principal stays protected while the agent uses only harvested and released yield.
+            Most agent products stop at “connect wallet”. That is not enough for real money. Treasury owners need a clean way to say: the agent can use this budget, but not the rest.
           </p>
         </article>
         <article class="feature">
-          <div class="card-topline">What Is New</div>
-          <h3>Governance sits before execution, not after.</h3>
+          <div class="card-topline">Product</div>
+          <h3>A budget guard that sits in front of every agent action.</h3>
           <p>
-            Budget checks, route checks, protocol scope, counterparty scope, and operator posture are enforced before the execution path proceeds.
+            Yield Charter checks budget, route, protocol, counterparty, and risk before execution. The agent does not spend first and explain later.
           </p>
         </article>
         <article class="feature">
-          <div class="card-topline">Why X Layer</div>
-          <h3>Fits autonomous DeFi treasury operations.</h3>
+          <div class="card-topline">Who It Is For</div>
+          <h3>Teams running trading, rebalancing, or ops agents with real funds.</h3>
           <p>
-            The system is shaped for X Layer agent flows: treasury balances, agentic execution, route decisions, and inspectable proof packets that judges can read.
+            If your agent needs to move money on X Layer, this product gives you a usable operating model: small budget, hard rules, and visible receipts.
           </p>
         </article>
       </section>
 
       <section class="panel-grid">
         <article class="panel">
-          <div class="section-label">Critical Path</div>
-          <h3>How a round actually works</h3>
+          <div class="section-label">How It Works</div>
+          <h3>What the product does in one loop</h3>
           <p>
-            The human defines the budget envelope once. The agent then operates inside that machine-readable policy, and every round produces a receipt and proof surface.
+            A treasury owner sets the rules once. After that, the agent can keep operating inside those rules, and every action leaves a visible record.
           </p>
           <div class="stack-list">
-            <div class="stack-step">1. Human issues charter with principal floor and released yield.</div>
-            <div class="stack-step">2. Human issues short-lived lease with asset, protocol, and budget scope.</div>
-            <div class="stack-step">3. Agent submits request against the active lease.</div>
-            <div class="stack-step">4. Policy engine checks operator state, budget, route, and safety.</div>
-            <div class="stack-step">5. Request is allowed, resized, or blocked before execution.</div>
-            <div class="stack-step">6. Receipt, JSON proof, and dashboard are written for inspection.</div>
+            <div class="stack-step">1. Owner locks the principal and releases a smaller agent budget.</div>
+            <div class="stack-step">2. Owner sets which assets, protocols, and limits the agent may use.</div>
+            <div class="stack-step">3. Agent asks to trade or rebalance.</div>
+            <div class="stack-step">4. The product checks budget, route quality, allowlists, and safety.</div>
+            <div class="stack-step">5. The request is approved, resized, or blocked before execution.</div>
+            <div class="stack-step">6. A receipt and proof page show exactly what happened.</div>
           </div>
         </article>
 
         <article class="panel">
-          <div class="section-label">Latest Operating State</div>
-          <h3>Current round at a glance</h3>
+          <div class="section-label">Latest Request</div>
+          <h3>What the agent tried to do</h3>
           <div class="data-grid">
             <div class="data-card"><div class="k">Charter Id</div><div class="v mono">charter_ea21614c-3999-465a-89fe-f6209c0b723e</div></div>
             <div class="data-card"><div class="k">Lease Id</div><div class="v mono">lease_fc721978-9dac-4a36-b91b-e5d23ad9f927</div></div>
@@ -503,20 +503,20 @@
       </section>
 
       <section class="panel" style="margin-top: 18px;">
-        <div class="section-label">Judge Readout</div>
-        <h3>What judges should immediately see</h3>
+        <div class="section-label">Why This Is A Product</div>
+        <h3>What should be obvious in 10 seconds</h3>
         <div class="how-grid">
           <div class="how-box">
-            <div class="card-topline">Human Governance Primitive</div>
-            <p>A treasury owner can define the principal floor, released yield, and who may consume the released budget.</p>
+            <div class="card-topline">A Clear User</div>
+            <p>A treasury owner who wants agents to operate with real funds but not control the whole wallet.</p>
           </div>
           <div class="how-box">
-            <div class="card-topline">OnchainOS In Critical Path</div>
-            <p>Wallet state, route evaluation, execution routing, and proof surfaces sit in the decision flow instead of being decorative extras.</p>
+            <div class="card-topline">A Clear Action</div>
+            <p>Set budget rules, let the agent act, and see every allowed, resized, or blocked request in one place.</p>
           </div>
           <div class="how-box">
-            <div class="card-topline">Product Completeness</div>
-            <p>Charter issuance, lease issuance, live round execution, JSON proof, dashboard, submission page, and runbooks are all part of the repo.</p>
+            <div class="card-topline">A Clear Trust Model</div>
+            <p>The money boundary is enforced before execution, and every spend comes back with a receipt and tx proof.</p>
           </div>
         </div>
       </section>

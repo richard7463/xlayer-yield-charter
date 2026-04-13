@@ -14,20 +14,47 @@
   <img alt="Boundary" src="https://img.shields.io/badge/Boundary-Principal%20Locked%20%7C%20Yield%20Spendable-c2410c">
 </p>
 
-> Treasury primitive for autonomous agents on X Layer: keep principal locked, release harvested yield, and let the agent operate only inside that released budget.
+> The product that lets you give an AI agent a spending budget without giving it your treasury.
 
 ## 30-Second Pitch
 
-Most agent wallets force an unsafe choice:
+If you want an agent to trade or rebalance with real money, today you usually get two bad options:
 
 1. give the agent broad wallet access, or
 2. manually approve every action.
 
 `X Layer Yield Charter` creates a third mode.
 
-A human treasury owner sets a principal floor, releases harvested yield as the operating budget, and issues a short-lived execution lease. The agent can trade or rebalance only inside that released yield envelope. If a request exceeds budget, route, or policy constraints, the system resizes or blocks it before execution.
+A treasury owner locks the principal, releases a smaller operating budget, and sets the rules for what the agent is allowed to do. The agent can trade or rebalance only inside that budget. If a request is too large, unsafe, or outside scope, the system resizes or blocks it before execution.
 
-This is not a bot dashboard. It is a treasury governance primitive for the agent economy.
+In product terms, this is an **agent budget guard** for X Layer.
+
+## What The Product Does
+
+With Yield Charter, a treasury owner can:
+
+- keep the main treasury protected
+- release only a small budget to the agent
+- define allowed assets, protocols, and daily limits
+- let the agent keep operating without manual clicks
+- inspect every request, decision, and tx receipt afterward
+
+So the operating model becomes:
+
+```text
+treasury owner sets rules
+agent asks to spend
+system checks rules
+system approves / resizes / blocks
+receipt and tx proof are written
+```
+
+## Who This Is For
+
+- teams running trading agents
+- teams running treasury rebalancers
+- teams giving agents real operating budgets on X Layer
+- builders who want autonomy without full wallet exposure
 
 ## For Hackathon Judges
 
@@ -94,7 +121,7 @@ This snapshot is from the latest locally broadcasted live round on **2026-04-13 
 | Approve or reject after the trade | Gate budget, route, token, protocol, and counterparty before execution |
 | Generic wallet allowance | Capital-layer-aware treasury boundary |
 | Hard to prove what budget the agent actually used | Receipt explicitly records `capitalLayer`, `spentUsd`, `txHash`, and proof packet |
-| A bot feature | A reusable treasury operating primitive |
+| A risky bot setup | A usable treasury product for agent operators |
 
 ## Product Surface
 

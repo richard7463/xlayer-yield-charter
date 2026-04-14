@@ -50,6 +50,12 @@ function ratio(value: number, total: number): number {
   return Math.max(0, Math.min(100, (value / total) * 100));
 }
 
+function jsonForScript(value: unknown): string {
+  return JSON.stringify(value)
+    .replaceAll("<", "\\u003c")
+    .replaceAll("-->", "--\\>");
+}
+
 function renderRecentRounds(index: RoundArtifactIndexEntry[]): string {
   return index
     .slice(0, 6)
@@ -77,21 +83,21 @@ function renderCapitalBands(packet: ProofPacket): string {
     <div class="capital-card">
       <div class="card-topline">Treasury Rules</div>
       <h2>Your agent gets a budget. Your treasury keeps control.</h2>
-      <p>
+      <p id="capital-note">
         The product splits one wallet into two layers: untouchable principal and spendable agent budget. Every request is checked against that budget before any swap can happen.
       </p>
       <div class="capital-stack">
-        <span class="band principal" style="width:${principalWidth}%"></span>
-        <span class="band released" style="width:${releasedWidth}%"></span>
-        <span class="band spent" style="width:${spentWidth}%"></span>
+        <span class="band principal" id="band-principal" style="width:${principalWidth}%"></span>
+        <span class="band released" id="band-released" style="width:${releasedWidth}%"></span>
+        <span class="band spent" id="band-spent" style="width:${spentWidth}%"></span>
       </div>
       <div class="capital-grid">
-        <div class="capital-row"><span class="swatch principal"></span>Principal floor<strong>${formatUsd(packet.charter.principalFloorUsd)}</strong></div>
-        <div class="capital-row"><span class="swatch released"></span>Yield released<strong>${formatUsd(packet.yieldLedger.releasedYieldUsd)}</strong></div>
-        <div class="capital-row"><span class="swatch spent"></span>Yield spent<strong>${formatUsd(packet.yieldLedger.spentYieldUsd)}</strong></div>
-        <div class="capital-row"><span class="swatch remaining"></span>Yield remaining<strong>${formatUsd(packet.yieldLedger.remainingYieldBudgetUsd)}</strong></div>
+        <div class="capital-row"><span class="swatch principal"></span>Principal floor<strong id="capital-principal">${formatUsd(packet.charter.principalFloorUsd)}</strong></div>
+        <div class="capital-row"><span class="swatch released"></span>Yield released<strong id="capital-released">${formatUsd(packet.yieldLedger.releasedYieldUsd)}</strong></div>
+        <div class="capital-row"><span class="swatch spent"></span>Yield spent<strong id="capital-spent">${formatUsd(packet.yieldLedger.spentYieldUsd)}</strong></div>
+        <div class="capital-row"><span class="swatch remaining"></span>Yield remaining<strong id="capital-remaining">${formatUsd(packet.yieldLedger.remainingYieldBudgetUsd)}</strong></div>
       </div>
-      <div class="remaining-bar"><div class="remaining-fill" style="width:${remainingWidth}%"></div></div>
+      <div class="remaining-bar"><div class="remaining-fill" id="band-remaining" style="width:${remainingWidth}%"></div></div>
     </div>
   `;
 }
@@ -105,6 +111,79 @@ export function buildSubmissionHtml(input: {
   const proofDashboardFileName = input.proofDashboardFileName ?? "proof-dashboard.html";
   const productName = titleCase(packet.product);
   const executionTone = packet.execution.status === "broadcasted" ? "ok" : packet.execution.status === "simulated" ? "warn" : "fail";
+  const demoState = {
+    initial: {
+      principalFloorUsd: packet.charter.principalFloorUsd,
+      releasedYieldUsd: packet.yieldLedger.releasedYieldUsd,
+      spentYieldUsd: packet.yieldLedger.spentYieldUsd,
+      remainingYieldBudgetUsd: packet.yieldLedger.remainingYieldBudgetUsd,
+      requestNotionalUsd: packet.request.notionalUsd,
+      finalNotionalUsd: packet.decision.finalNotionalUsd,
+      decisionOutcome: titleCase(packet.decision.outcome),
+      operatorMode: titleCase(packet.operator.mode),
+      executionStatus: titleCase(packet.execution.status),
+      capitalLayer: titleCase(packet.receipt.capitalLayer),
+      requestPair: `${packet.request.fromToken} -> ${packet.request.toToken}`,
+      venueHint: packet.request.venueHint,
+      reason: packet.request.reason,
+      rationale: packet.decision.rationale,
+      txHashShort: shortHash(packet.execution.txHash),
+      note: "This is the live packet. Budget has already been released, the request was resized, and the execution reached X Layer."
+    },
+    scenarios: {
+      budget: {
+        releasedYieldUsd: 3.0,
+        spentYieldUsd: 0.0,
+        remainingYieldBudgetUsd: 3.0,
+        requestNotionalUsd: 0.0,
+        finalNotionalUsd: 0.0,
+        decisionOutcome: "Ready",
+        operatorMode: "Active",
+        executionStatus: "Waiting",
+        capitalLayer: "Yield",
+        requestPair: "No request yet",
+        venueHint: "Policy configured",
+        reason: "Owner released an operating budget while keeping principal locked.",
+        rationale: "The agent can operate, but only inside the lease limits and route rules.",
+        txHashShort: "none",
+        note: "Budget released. The agent now has a controlled spending lane while treasury principal stays locked."
+      },
+      request: {
+        releasedYieldUsd: 3.0,
+        spentYieldUsd: 1.0,
+        remainingYieldBudgetUsd: 2.0,
+        requestNotionalUsd: packet.request.notionalUsd,
+        finalNotionalUsd: packet.decision.finalNotionalUsd,
+        decisionOutcome: titleCase(packet.decision.outcome),
+        operatorMode: "Active",
+        executionStatus: titleCase(packet.execution.status),
+        capitalLayer: titleCase(packet.receipt.capitalLayer),
+        requestPair: `${packet.request.fromToken} -> ${packet.request.toToken}`,
+        venueHint: packet.request.venueHint,
+        reason: packet.request.reason,
+        rationale: packet.decision.rationale,
+        txHashShort: shortHash(packet.execution.txHash),
+        note: "Oversized request detected. The product resized the spend to stay inside released yield and policy limits."
+      },
+      paused: {
+        releasedYieldUsd: 3.0,
+        spentYieldUsd: 1.0,
+        remainingYieldBudgetUsd: 2.0,
+        requestNotionalUsd: packet.request.notionalUsd,
+        finalNotionalUsd: 0.0,
+        decisionOutcome: "Blocked",
+        operatorMode: "Paused",
+        executionStatus: "Blocked",
+        capitalLayer: "None",
+        requestPair: `${packet.request.fromToken} -> ${packet.request.toToken}`,
+        venueHint: packet.request.venueHint,
+        reason: "Operator pause blocks all new spending requests.",
+        rationale: "The product stopped the request before the execution path because the human owner paused the agent.",
+        txHashShort: "none",
+        note: "Pause works as a hard stop. The agent can keep reporting, but it cannot spend until the owner resumes."
+      }
+    }
+  };
 
   return `<!doctype html>
 <html lang="en">
@@ -277,7 +356,9 @@ export function buildSubmissionHtml(input: {
       .panel-grid,
       .capital-grid,
       .data-grid,
-      .how-grid {
+      .how-grid,
+      .demo-kpis,
+      .demo-actions {
         display: grid;
         gap: 14px;
       }
@@ -435,6 +516,88 @@ export function buildSubmissionHtml(input: {
         color: var(--ink);
         word-break: break-word;
       }
+      .demo-kpis {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 18px;
+      }
+      .demo-tile {
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.72);
+      }
+      .demo-tile .k {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .demo-tile .v {
+        margin-top: 8px;
+        font: 700 24px/1.05 "Space Grotesk", sans-serif;
+        color: var(--ink);
+      }
+      .demo-tile .n {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .demo-actions {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-top: 18px;
+      }
+      .demo-button {
+        width: 100%;
+        border: 1px solid var(--line-strong);
+        background: rgba(255,255,255,0.8);
+        color: var(--ink);
+        border-radius: 16px;
+        padding: 14px 12px;
+        font: 600 12px/1 "IBM Plex Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        transition: transform .15s ease, border-color .15s ease, background .15s ease;
+      }
+      .demo-button:hover {
+        transform: translateY(-1px);
+        border-color: rgba(26, 125, 170, 0.28);
+        background: rgba(255,255,255,0.96);
+      }
+      .demo-button.primary {
+        background: rgba(26, 125, 170, 0.1);
+        color: var(--cyan);
+      }
+      .demo-button.warn {
+        background: rgba(165, 101, 27, 0.08);
+        color: var(--amber);
+      }
+      .demo-button.danger {
+        background: rgba(185, 75, 92, 0.08);
+        color: var(--red);
+      }
+      .demo-callout {
+        margin-top: 18px;
+        padding: 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(26, 125, 170, 0.14);
+        background: rgba(26, 125, 170, 0.05);
+      }
+      .demo-callout strong {
+        display: block;
+        margin-bottom: 6px;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 18px;
+      }
+      .hint-list {
+        margin: 16px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+      .hint-list li + li {
+        margin-top: 8px;
+      }
       table {
         width: 100%;
         border-collapse: collapse;
@@ -461,7 +624,9 @@ export function buildSubmissionHtml(input: {
         .status-row,
         .metrics,
         .capital-grid,
-        .data-grid { grid-template-columns: 1fr 1fr; }
+        .data-grid,
+        .demo-kpis,
+        .demo-actions { grid-template-columns: 1fr 1fr; }
       }
       @media (max-width: 680px) {
         .page { width: min(100vw - 18px, 100%); }
@@ -475,6 +640,8 @@ export function buildSubmissionHtml(input: {
         .metrics,
         .capital-grid,
         .data-grid,
+        .demo-kpis,
+        .demo-actions,
         .topbar { grid-template-columns: 1fr; display: grid; }
         .hero h1 { max-width: none; }
       }
@@ -499,34 +666,34 @@ export function buildSubmissionHtml(input: {
           <div class="eyebrow">Agent Budget Guard · Treasury Product</div>
           <h1>Set an agent budget without giving it your treasury.</h1>
           <p class="hero-copy">
-            X Layer Yield Charter is a product for people who want agents to trade or rebalance with real funds, but do not want those agents to control the whole wallet. You lock the principal, release a smaller operating budget, and the system allows, resizes, or blocks each request before money moves.
+            X Layer Yield Charter is a product for people who want agents to trade or rebalance with real funds, but do not want those agents to control the whole wallet. Use it in three moves: release a budget, let the agent request a trade, and inspect whether the system approved, resized, or blocked that request before money moved.
           </p>
           <div class="status-row">
             <span class="status-pill ok">Network X Layer ${packet.execution.chainId}</span>
             <span class="status-pill ok">Consumer ${escapeHtml(packet.charter.consumerName)}</span>
-            <span class="status-pill ${packet.decision.outcome === "approve" ? "ok" : packet.decision.outcome === "resize" ? "warn" : "fail"}">Decision ${escapeHtml(titleCase(packet.decision.outcome))}</span>
-            <span class="status-pill ${packet.receipt.capitalLayer === "yield" ? "ok" : packet.receipt.capitalLayer === "none" ? "warn" : "fail"}">Capital ${escapeHtml(titleCase(packet.receipt.capitalLayer))}</span>
+            <span class="status-pill ${packet.decision.outcome === "approve" ? "ok" : packet.decision.outcome === "resize" ? "warn" : "fail"}" id="hero-decision-pill">Decision ${escapeHtml(titleCase(packet.decision.outcome))}</span>
+            <span class="status-pill ${packet.receipt.capitalLayer === "yield" ? "ok" : packet.receipt.capitalLayer === "none" ? "warn" : "fail"}" id="hero-capital-pill">Capital ${escapeHtml(titleCase(packet.receipt.capitalLayer))}</span>
           </div>
           <div class="metrics">
             <article class="metric">
               <div class="metric-label">Principal Floor</div>
-              <div class="metric-value cyan">${formatUsd(packet.charter.principalFloorUsd)}</div>
+              <div class="metric-value cyan" id="metric-principal">${formatUsd(packet.charter.principalFloorUsd)}</div>
               <div class="metric-note">Locked treasury base</div>
             </article>
             <article class="metric">
               <div class="metric-label">Released Yield</div>
-              <div class="metric-value green">${formatUsd(packet.yieldLedger.releasedYieldUsd)}</div>
+              <div class="metric-value green" id="metric-released">${formatUsd(packet.yieldLedger.releasedYieldUsd)}</div>
               <div class="metric-note">Operating budget made available</div>
             </article>
             <article class="metric">
               <div class="metric-label">Remaining Yield</div>
-              <div class="metric-value amber">${formatUsd(packet.yieldLedger.remainingYieldBudgetUsd)}</div>
+              <div class="metric-value amber" id="metric-remaining">${formatUsd(packet.yieldLedger.remainingYieldBudgetUsd)}</div>
               <div class="metric-note">Still spendable this round</div>
             </article>
             <article class="metric">
               <div class="metric-label">Final Notional</div>
-              <div class="metric-value ${packet.decision.outcome === "block" ? "red" : "cyan"}">${formatUsd(packet.decision.finalNotionalUsd)}</div>
-              <div class="metric-note">Policy-adjusted request size</div>
+              <div class="metric-value ${packet.decision.outcome === "block" ? "red" : "cyan"}" id="metric-final">${formatUsd(packet.decision.finalNotionalUsd)}</div>
+              <div class="metric-note" id="metric-final-note">Policy-adjusted request size</div>
             </article>
           </div>
         </div>
@@ -559,35 +726,73 @@ export function buildSubmissionHtml(input: {
 
       <section class="panel-grid">
         <article class="panel">
-          <div class="section-label">How It Works</div>
-          <h3>What the product does in one loop</h3>
+          <div class="section-label">How To Use</div>
+          <h3>Try the app in 30 seconds</h3>
           <p>
-            A treasury owner sets the rules once. After that, the agent can keep operating inside those rules, and every action leaves a visible record.
+            This app is for a treasury owner. You do not hand the whole wallet to the agent. You release a smaller budget, let the agent ask to act, and the product enforces the money boundary for you.
           </p>
           <div class="stack-list">
-            <div class="stack-step">1. Owner locks the principal and releases a smaller agent budget.</div>
-            <div class="stack-step">2. Owner sets which assets, protocols, and limits the agent may use.</div>
-            <div class="stack-step">3. Agent asks to trade or rebalance.</div>
-            <div class="stack-step">4. The product checks budget, route quality, allowlists, and safety.</div>
-            <div class="stack-step">5. The request is approved, resized, or blocked before execution.</div>
-            <div class="stack-step">6. A receipt and proof page show exactly what happened.</div>
+            <div class="stack-step">1. Click <strong>Set Budget</strong> to release an operating budget while keeping principal locked.</div>
+            <div class="stack-step">2. Click <strong>Run Agent Request</strong> to see how the guard resizes or approves spending.</div>
+            <div class="stack-step">3. Click <strong>Pause Agent</strong> to watch the same request get blocked before execution.</div>
+            <div class="stack-step">4. Click <strong>Reset Live State</strong> to go back to the current live packet.</div>
           </div>
+          <ul class="hint-list">
+            <li>This is not a generic wallet dashboard. It is a spending-control product for autonomous agents.</li>
+            <li>The core promise is simple: the agent can spend released yield, but not treasury principal.</li>
+            <li>Every allowed spend comes back with a receipt, a policy rationale, and tx proof.</li>
+          </ul>
         </article>
 
         <article class="panel">
-          <div class="section-label">Latest Request</div>
-          <h3>What the agent tried to do</h3>
-          <div class="data-grid">
-            <div class="data-card"><div class="k">Charter Id</div><div class="v mono">${escapeHtml(packet.charter.charterId)}</div></div>
-            <div class="data-card"><div class="k">Lease Id</div><div class="v mono">${escapeHtml(packet.lease.leaseId)}</div></div>
-            <div class="data-card"><div class="k">Asset Pair</div><div class="v">${escapeHtml(packet.request.assetPair)}</div></div>
-            <div class="data-card"><div class="k">Venue</div><div class="v">${escapeHtml(packet.request.venueHint)}</div></div>
-            <div class="data-card"><div class="k">Outcome</div><div class="v">${escapeHtml(titleCase(packet.decision.outcome))}</div></div>
-            <div class="data-card"><div class="k">Tx Hash</div><div class="v mono">${escapeHtml(shortHash(packet.execution.txHash))}</div></div>
+          <div class="section-label">Interactive Demo</div>
+          <h3>Click the controls and watch the policy react</h3>
+          <p id="demo-note">
+            Start with <strong>Set Budget</strong>. Then run a request. This panel updates the budget, the decision, and the execution outcome.
+          </p>
+          <div class="demo-actions">
+            <button class="demo-button primary" id="action-set-budget">Set Budget</button>
+            <button class="demo-button warn" id="action-run-request">Run Agent Request</button>
+            <button class="demo-button danger" id="action-pause-agent">Pause Agent</button>
+            <button class="demo-button" id="action-reset-demo">Reset Live State</button>
           </div>
-          <p><strong>Reason:</strong> ${escapeHtml(packet.request.reason)}</p>
-          <p><strong>Rationale:</strong> ${escapeHtml(packet.decision.rationale)}</p>
+          <div class="demo-kpis">
+            <div class="demo-tile">
+              <div class="k">Operator Mode</div>
+              <div class="v" id="demo-operator">${escapeHtml(titleCase(packet.operator.mode))}</div>
+              <div class="n">Human owner posture</div>
+            </div>
+            <div class="demo-tile">
+              <div class="k">Decision</div>
+              <div class="v" id="demo-decision">${escapeHtml(titleCase(packet.decision.outcome))}</div>
+              <div class="n">Policy result before execution</div>
+            </div>
+            <div class="demo-tile">
+              <div class="k">Execution</div>
+              <div class="v" id="demo-execution">${escapeHtml(titleCase(packet.execution.status))}</div>
+              <div class="n">What happened onchain</div>
+            </div>
+          </div>
+          <div class="demo-callout">
+            <strong id="demo-headline">Current live state</strong>
+            <p id="demo-rationale">${escapeHtml(packet.decision.rationale)}</p>
+          </div>
         </article>
+      </section>
+
+      <section class="panel" style="margin-top: 18px;">
+        <div class="section-label">Live Request State</div>
+        <h3>What the agent is asking for right now</h3>
+        <div class="data-grid">
+          <div class="data-card"><div class="k">Charter Id</div><div class="v mono">${escapeHtml(packet.charter.charterId)}</div></div>
+          <div class="data-card"><div class="k">Lease Id</div><div class="v mono">${escapeHtml(packet.lease.leaseId)}</div></div>
+          <div class="data-card"><div class="k">Request Pair</div><div class="v" id="request-pair">${escapeHtml(`${packet.request.fromToken} -> ${packet.request.toToken}`)}</div></div>
+          <div class="data-card"><div class="k">Venue</div><div class="v" id="request-venue">${escapeHtml(packet.request.venueHint)}</div></div>
+          <div class="data-card"><div class="k">Requested</div><div class="v" id="request-size">${formatUsd(packet.request.notionalUsd)}</div></div>
+          <div class="data-card"><div class="k">Allowed</div><div class="v" id="request-allowed">${formatUsd(packet.decision.finalNotionalUsd)}</div></div>
+          <div class="data-card"><div class="k">Reason</div><div class="v" id="request-reason">${escapeHtml(packet.request.reason)}</div></div>
+          <div class="data-card"><div class="k">Tx Hash</div><div class="v mono" id="request-tx">${escapeHtml(shortHash(packet.execution.txHash))}</div></div>
+        </div>
       </section>
 
       <section class="panel" style="margin-top: 18px;">
@@ -625,6 +830,89 @@ export function buildSubmissionHtml(input: {
         </table>
       </section>
     </div>
+    <script>
+      const demoState = ${jsonForScript(demoState)};
+      const fmtUsd = (value) => new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(value);
+
+      function pillToneForDecision(value) {
+        const lower = value.toLowerCase();
+        if (lower === "approve" || lower === "ready") return "ok";
+        if (lower === "resize" || lower === "waiting") return "warn";
+        return "fail";
+      }
+
+      function pillToneForCapital(value) {
+        const lower = value.toLowerCase();
+        if (lower === "yield") return "ok";
+        if (lower === "none") return "fail";
+        return "warn";
+      }
+
+      function headlineForState(next) {
+        if (next.operatorMode === "Paused") return "Agent paused";
+        if (next.decisionOutcome === "Ready") return "Budget has been released";
+        if (next.decisionOutcome === "Resize") return "Oversized request was resized";
+        return "Current live state";
+      }
+
+      function applyScenario(next) {
+        const principal = demoState.initial.principalFloorUsd;
+        const total = Math.max(principal + next.releasedYieldUsd, 0.01);
+        const principalWidth = Math.max(0, Math.min(100, (principal / total) * 100));
+        const releasedWidth = Math.max(0, Math.min(100, (next.releasedYieldUsd / total) * 100));
+        const spentWidth = Math.max(0, Math.min(100, (next.spentYieldUsd / total) * 100));
+        const remainingWidth = Math.max(0, Math.min(100, (next.remainingYieldBudgetUsd / total) * 100));
+
+        document.getElementById("metric-principal").textContent = fmtUsd(principal);
+        document.getElementById("metric-released").textContent = fmtUsd(next.releasedYieldUsd);
+        document.getElementById("metric-remaining").textContent = fmtUsd(next.remainingYieldBudgetUsd);
+        document.getElementById("metric-final").textContent = fmtUsd(next.finalNotionalUsd);
+        document.getElementById("metric-final-note").textContent = next.finalNotionalUsd > 0 ? "Policy-adjusted request size" : "No spend allowed in this state";
+
+        document.getElementById("capital-principal").textContent = fmtUsd(principal);
+        document.getElementById("capital-released").textContent = fmtUsd(next.releasedYieldUsd);
+        document.getElementById("capital-spent").textContent = fmtUsd(next.spentYieldUsd);
+        document.getElementById("capital-remaining").textContent = fmtUsd(next.remainingYieldBudgetUsd);
+        document.getElementById("band-principal").style.width = principalWidth + "%";
+        document.getElementById("band-released").style.width = releasedWidth + "%";
+        document.getElementById("band-spent").style.width = spentWidth + "%";
+        document.getElementById("band-remaining").style.width = remainingWidth + "%";
+        document.getElementById("capital-note").textContent = next.note;
+
+        const decisionPill = document.getElementById("hero-decision-pill");
+        decisionPill.className = "status-pill " + pillToneForDecision(next.decisionOutcome);
+        decisionPill.textContent = "Decision " + next.decisionOutcome;
+
+        const capitalPill = document.getElementById("hero-capital-pill");
+        capitalPill.className = "status-pill " + pillToneForCapital(next.capitalLayer);
+        capitalPill.textContent = "Capital " + next.capitalLayer;
+
+        document.getElementById("demo-operator").textContent = next.operatorMode;
+        document.getElementById("demo-decision").textContent = next.decisionOutcome;
+        document.getElementById("demo-execution").textContent = next.executionStatus;
+        document.getElementById("demo-headline").textContent = headlineForState(next);
+        document.getElementById("demo-rationale").textContent = next.rationale;
+        document.getElementById("demo-note").textContent = next.note;
+
+        document.getElementById("request-pair").textContent = next.requestPair;
+        document.getElementById("request-venue").textContent = next.venueHint;
+        document.getElementById("request-size").textContent = fmtUsd(next.requestNotionalUsd);
+        document.getElementById("request-allowed").textContent = fmtUsd(next.finalNotionalUsd);
+        document.getElementById("request-reason").textContent = next.reason;
+        document.getElementById("request-tx").textContent = next.txHashShort;
+      }
+
+      document.getElementById("action-set-budget").addEventListener("click", () => applyScenario(demoState.scenarios.budget));
+      document.getElementById("action-run-request").addEventListener("click", () => applyScenario(demoState.scenarios.request));
+      document.getElementById("action-pause-agent").addEventListener("click", () => applyScenario(demoState.scenarios.paused));
+      document.getElementById("action-reset-demo").addEventListener("click", () => applyScenario(demoState.initial));
+      applyScenario(demoState.initial);
+    </script>
   </body>
 </html>`;
 }

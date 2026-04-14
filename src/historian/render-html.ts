@@ -106,6 +106,152 @@ function renderRouteHints(packet: ProofPacket): string {
     .join("");
 }
 
+function renderBudgetControls(packet: ProofPacket): string {
+  const controls = [
+    {
+      label: "Lock principal",
+      value: formatUsd(packet.charter.principalFloorUsd),
+      note: "Money the agent cannot touch."
+    },
+    {
+      label: "Release budget",
+      value: formatUsd(packet.yieldLedger.releasedYieldUsd),
+      note: "Money the agent is allowed to use."
+    },
+    {
+      label: "Set per-tx cap",
+      value: formatUsd(packet.lease.perTxUsd),
+      note: "Maximum size before resizing."
+    },
+    {
+      label: "Set daily cap",
+      value: formatUsd(packet.lease.dailyBudgetUsd),
+      note: "Maximum agent spend per day."
+    },
+    {
+      label: "Allow assets",
+      value: packet.lease.allowedAssets.join(", "),
+      note: "Tokens the agent can touch."
+    },
+    {
+      label: "Allow routes",
+      value: packet.lease.allowedProtocols.join(", "),
+      note: "Venues the agent can use."
+    }
+  ];
+
+  return controls
+    .map(
+      (control) => `
+        <article class="control-card">
+          <div class="control-label">${escapeHtml(control.label)}</div>
+          <div class="control-value">${escapeHtml(control.value)}</div>
+          <p>${escapeHtml(control.note)}</p>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function renderDecisionSummary(packet: ProofPacket): string {
+  const rows = [
+    ["Agent asked for", formatUsd(packet.request.notionalUsd)],
+    ["Product allowed", formatUsd(packet.decision.finalNotionalUsd)],
+    ["Decision", titleCase(packet.decision.outcome)],
+    ["Why", packet.decision.rationale]
+  ];
+
+  return rows
+    .map(
+      ([label, value]) => `
+        <div class="decision-row">
+          <span>${escapeHtml(label)}</span>
+          <strong>${escapeHtml(value)}</strong>
+        </div>
+      `
+    )
+    .join("");
+}
+
+function renderProductFlow(packet: ProofPacket): string {
+  const steps = [
+    {
+      label: "1. Protect",
+      title: "Owner locks the treasury",
+      body: `${formatUsd(packet.charter.principalFloorUsd)} is marked as principal. The agent cannot spend below this floor.`
+    },
+    {
+      label: "2. Release",
+      title: "Owner releases yield budget",
+      body: `${formatUsd(packet.yieldLedger.releasedYieldUsd)} is released as agent operating budget. This is the only money the agent can use.`
+    },
+    {
+      label: "3. Request",
+      title: "Agent asks to act",
+      body: `${packet.charter.consumerName} requested ${formatUsd(packet.request.notionalUsd)} for ${packet.request.fromToken} -> ${packet.request.toToken}.`
+    },
+    {
+      label: "4. Decide",
+      title: "Guard resizes or blocks",
+      body: `The guard returned ${titleCase(packet.decision.outcome)} and allowed ${formatUsd(packet.decision.finalNotionalUsd)}.`
+    },
+    {
+      label: "5. Receipt",
+      title: "Every action leaves proof",
+      body: `${titleCase(packet.execution.status)} on X Layer with receipt ${shortHash(packet.execution.txHash)}.`
+    }
+  ];
+
+  return steps
+    .map(
+      (step) => `
+        <article class="flow-card">
+          <div class="flow-label">${escapeHtml(step.label)}</div>
+          <h4>${escapeHtml(step.title)}</h4>
+          <p>${escapeHtml(step.body)}</p>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function renderOperatorActions(packet: ProofPacket): string {
+  const actions = [
+    {
+      label: "Pause agent",
+      title: "Stop all new spending",
+      body: "Used when the owner sees strange behavior or wants to freeze the agent before the next request."
+    },
+    {
+      label: "Review mode",
+      title: "Route risky requests to human review",
+      body: "Used when the agent can keep reporting, but cannot execute without a human checkpoint."
+    },
+    {
+      label: "Resume",
+      title: "Reopen the budget lane",
+      body: `Current mode is ${titleCase(packet.operator.mode)}. The agent can operate only inside the active lease.`
+    },
+    {
+      label: "Open receipt",
+      title: "Inspect the transaction",
+      body: packet.execution.explorerUrl ? `Latest X Layer tx: ${shortHash(packet.execution.txHash)}` : "No onchain transaction was attached to this round."
+    }
+  ];
+
+  return actions
+    .map(
+      (action) => `
+        <article class="action-card">
+          <span>${escapeHtml(action.label)}</span>
+          <strong>${escapeHtml(action.title)}</strong>
+          <p>${escapeHtml(action.body)}</p>
+        </article>
+      `
+    )
+    .join("");
+}
+
 function renderCapitalMeter(packet: ProofPacket): string {
   const total = Math.max(packet.treasury.totalUsd, packet.charter.principalFloorUsd + packet.yieldLedger.releasedYieldUsd, 0.01);
   const principalWidth = ratio(packet.charter.principalFloorUsd, total);
@@ -392,7 +538,8 @@ export function buildProofDashboardHtml(input: {
       }
       .metric-value {
         margin-top: 10px;
-        font: 700 28px/1 "Space Grotesk", sans-serif;
+        font: 700 clamp(22px, 2.2vw, 28px)/1 "Space Grotesk", sans-serif;
+        word-break: break-word;
       }
       .metric-foot {
         margin-top: 8px;
@@ -522,6 +669,59 @@ export function buildProofDashboardHtml(input: {
         color: var(--text);
         word-break: break-word;
       }
+      .flow-grid,
+      .action-grid {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .flow-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+      .action-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .flow-card,
+      .action-card {
+        padding: 16px;
+        border-radius: 20px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .flow-label,
+      .action-card span {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--cyan);
+      }
+      .flow-card h4,
+      .action-card strong {
+        display: block;
+        margin: 10px 0 0;
+        font: 700 18px/1.15 "Space Grotesk", sans-serif;
+      }
+      .flow-card p,
+      .action-card p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+      .operator-callout {
+        margin-top: 18px;
+        padding: 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(105, 213, 255, 0.22);
+        background: linear-gradient(135deg, rgba(105, 213, 255, 0.1), rgba(111, 240, 186, 0.05));
+        color: var(--text);
+      }
+      .operator-callout strong {
+        display: block;
+        margin-bottom: 6px;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 18px;
+      }
       .check-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -547,11 +747,59 @@ export function buildProofDashboardHtml(input: {
         font: 600 16px/1.3 "IBM Plex Sans", sans-serif;
         flex: 1;
       }
-      .receipt-grid {
+      .receipt-grid,
+      .control-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 12px;
         margin-top: 18px;
+      }
+      .control-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .control-card {
+        padding: 15px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.03);
+      }
+      .control-label {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .control-value {
+        margin-top: 10px;
+        color: var(--text);
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .control-card p { margin-bottom: 0; color: var(--muted); }
+      .decision-box {
+        margin-top: 18px;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.03);
+      }
+      .decision-row {
+        display: grid;
+        grid-template-columns: 160px minmax(0, 1fr);
+        gap: 12px;
+        padding: 14px 16px;
+        border-top: 1px solid var(--line);
+      }
+      .decision-row:first-child { border-top: 0; }
+      .decision-row span {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .decision-row strong {
+        color: var(--text);
+        line-height: 1.45;
       }
       .receipt-box {
         padding: 14px;
@@ -595,6 +843,9 @@ export function buildProofDashboardHtml(input: {
         .receipt-grid,
         .check-grid,
         .data-grid,
+        .control-grid,
+        .flow-grid,
+        .action-grid,
         .meter-legend { grid-template-columns: 1fr 1fr; }
       }
       @media (max-width: 720px) {
@@ -610,7 +861,11 @@ export function buildProofDashboardHtml(input: {
         .receipt-grid,
         .check-grid,
         .data-grid,
+        .control-grid,
+        .flow-grid,
+        .action-grid,
         .meter-legend { grid-template-columns: 1fr; }
+        .decision-row { grid-template-columns: 1fr; }
         .hero h2 { max-width: none; }
       }
     </style>
@@ -634,30 +889,32 @@ export function buildProofDashboardHtml(input: {
         </div>
 
         <div class="rail-box">
-          <div class="rail-label">Submission Surface</div>
+          <div class="rail-label">Current Wallet</div>
           <p>Network: X Layer mainnet (${packet.execution.chainId})</p>
           <p>Consumer: ${escapeHtml(packet.charter.consumerName)}</p>
           <p>Spend asset: ${escapeHtml(packet.charter.spendAsset)}</p>
-          <p>Yield mode: ${escapeHtml(titleCase(packet.charter.yieldSourceMode))}</p>
+          <p>Agent budget left: ${formatUsd(packet.yieldLedger.remainingYieldBudgetUsd)}</p>
         </div>
 
         <div class="link-stack">
-          <div class="rail-label">What To Inspect</div>
-          <a href="#boundary">Capital boundary and released yield</a>
-          <a href="#request">Latest request and route decision</a>
-          <a href="#checks">Pre-execution policy checks</a>
-          <a href="#receipt">Receipt and transaction evidence</a>
-          <a href="#rounds">Recent charter rounds</a>
+          <div class="rail-label">Functional Areas</div>
+          <a href="#how-it-works">0. What This Page Does</a>
+          <a href="#owner-setup">1. Owner Setup</a>
+          <a href="#agent-request">2. Agent Request</a>
+          <a href="#decision">3. Decision Engine</a>
+          <a href="#operator-controls">4. Operator Controls</a>
+          <a href="#receipt">5. Receipt</a>
+          <a href="#rounds">6. History</a>
         </div>
       </aside>
 
       <main class="main">
         <section class="hero">
           <div>
-            <div class="eyebrow">Agent Budget Guard · Live Console</div>
-            <h2>Give the agent a budget, not the whole wallet.</h2>
+            <div class="eyebrow">Functional Dashboard · Live Console</div>
+            <h2>Agent Budget Control Center</h2>
             <p class="narrative">
-              This console shows a simple product rule: the treasury owner keeps control of principal, releases a smaller operating budget, and the agent can only act inside that budget. Every request is checked before money moves.
+              This page answers four questions for a human owner: what money is protected, what the agent tried to do, what the guard allowed, and where the X Layer receipt is.
             </p>
             <div class="status-row">
               <span class="status-pill ok">Wallet scope ${escapeHtml(packet.charter.walletAddress ? "Scoped" : "Shared Flow")}</span>
@@ -667,80 +924,100 @@ export function buildProofDashboardHtml(input: {
             </div>
             <div class="metric-grid">
               <article class="stat">
-                <div class="metric-label">Principal Floor</div>
+                <div class="metric-label">1. Owner Setup</div>
                 <div class="metric-value cyan">${formatUsd(packet.charter.principalFloorUsd)}</div>
-                <div class="metric-foot">Untouchable capital threshold</div>
+                <div class="metric-foot">Principal locked. Agent budget released: ${formatUsd(packet.yieldLedger.releasedYieldUsd)}</div>
               </article>
               <article class="stat">
-                <div class="metric-label">Released Yield</div>
-                <div class="metric-value green">${formatUsd(packet.yieldLedger.releasedYieldUsd)}</div>
-                <div class="metric-foot">Budget the agent can use</div>
+                <div class="metric-label">2. Agent Request</div>
+                <div class="metric-value green">${escapeHtml(packet.request.fromToken)} -> ${escapeHtml(packet.request.toToken)}</div>
+                <div class="metric-foot">Requested ${formatUsd(packet.request.notionalUsd)} via ${escapeHtml(packet.request.venueHint)}</div>
               </article>
               <article class="stat">
-                <div class="metric-label">Remaining Budget</div>
+                <div class="metric-label">3. Guard Decision</div>
                 <div class="metric-value amber">${formatUsd(packet.yieldLedger.remainingYieldBudgetUsd)}</div>
-                <div class="metric-foot">Yield still available today</div>
+                <div class="metric-foot">${escapeHtml(titleCase(packet.decision.outcome))}: allowed ${formatUsd(packet.decision.finalNotionalUsd)}</div>
               </article>
               <article class="stat">
-                <div class="metric-label">Latest Request</div>
-                <div class="metric-value ${packet.decision.outcome === "block" ? "red" : "cyan"}">${formatUsd(packet.decision.finalNotionalUsd)}</div>
-                <div class="metric-foot">${escapeHtml(packet.request.assetPair)} via ${escapeHtml(packet.request.venueHint)}</div>
+                <div class="metric-label">4. Receipt</div>
+                <div class="metric-value ${packet.execution.status === "broadcasted" ? "green" : packet.decision.outcome === "block" ? "red" : "cyan"}">${packet.execution.status === "broadcasted" ? "Live Tx" : escapeHtml(titleCase(packet.execution.status))}</div>
+                <div class="metric-foot">Capital layer: ${escapeHtml(titleCase(packet.receipt.capitalLayer))}; tx: ${escapeHtml(shortHash(packet.execution.txHash))}</div>
               </article>
             </div>
           </div>
           ${renderCapitalMeter(packet)}
         </section>
 
-        <section class="detail-grid">
-          <article class="panel" id="boundary">
-            <div class="section-label">Owner Settings</div>
-            <h3>The rules the owner gave the agent</h3>
-            <p class="subcopy">
-              This is the product setup: how much money stays locked, how much budget is released, and what the agent is allowed to do with it.
-            </p>
-            <div class="data-grid">
-              <div class="data-card"><div class="k">Charter Id</div><div class="v mono">${escapeHtml(packet.charter.charterId)}</div></div>
-              <div class="data-card"><div class="k">Lease Id</div><div class="v mono">${escapeHtml(packet.lease.leaseId)}</div></div>
-              <div class="data-card"><div class="k">Consumer</div><div class="v">${escapeHtml(packet.charter.consumerName)}</div></div>
-              <div class="data-card"><div class="k">Wallet</div><div class="v mono">${escapeHtml(packet.charter.walletAddress ?? "Shared Agentic Wallet flow")}</div></div>
-              <div class="data-card"><div class="k">Yield Source</div><div class="v">${escapeHtml(packet.charter.yieldSourceName)}</div></div>
-              <div class="data-card"><div class="k">Budget Ceiling</div><div class="v">${formatUsd(packet.lease.dailyBudgetUsd)} daily / ${formatUsd(packet.lease.perTxUsd)} per tx</div></div>
-            </div>
-            <ul class="list-block">
-              <li>Allowed assets: ${packet.lease.allowedAssets.map(escapeHtml).join(", ")}</li>
-              <li>Allowed protocols: ${packet.lease.allowedProtocols.map(escapeHtml).join(", ")}</li>
-              <li>Actions: ${packet.lease.allowedActions.map(escapeHtml).join(", ")}</li>
-              <li>Trust requirements: reason ${packet.lease.trustRequirements.reasonRequired ? "required" : "optional"}, proof ${packet.lease.trustRequirements.proofRequired ? "required" : "optional"}</li>
-            </ul>
-          </article>
+        <section class="panel" id="how-it-works" style="margin-top: 18px;">
+          <div class="section-label">0. What This Page Does</div>
+          <h3>A control surface for agent spending</h3>
+          <p class="subcopy">
+            X Layer Yield Charter is not a yield dashboard. It is a governance layer for autonomous agents. The owner releases a small yield budget, the agent asks to spend it, the guard checks the request, and only then can execution reach X Layer.
+          </p>
+          <div class="flow-grid">${renderProductFlow(packet)}</div>
+        </section>
 
-          <article class="panel" id="request">
-            <div class="section-label">Agent Request</div>
-            <h3>What the agent tried to do</h3>
-            <p class="subcopy">The agent asked to trade or rebalance. The system then decided whether the request should go through as-is, be resized, or be stopped.</p>
-            <div class="data-grid">
-              <div class="data-card"><div class="k">Action</div><div class="v">${escapeHtml(titleCase(packet.request.action))}</div></div>
-              <div class="data-card"><div class="k">Asset Pair</div><div class="v">${escapeHtml(packet.request.assetPair)}</div></div>
-              <div class="data-card"><div class="k">Requested</div><div class="v">${formatUsd(packet.request.notionalUsd)}</div></div>
-              <div class="data-card"><div class="k">Final Notional</div><div class="v">${formatUsd(packet.decision.finalNotionalUsd)}</div></div>
-            </div>
-            <div class="mini-pill-row">${renderRouteHints(packet)}</div>
-            <p class="helper"><strong>Reason:</strong> ${escapeHtml(packet.request.reason)}</p>
-            <p class="helper"><strong>Rationale:</strong> ${escapeHtml(packet.decision.rationale)}</p>
-          </article>
+        <section class="panel" id="owner-setup" style="margin-top: 18px;">
+          <div class="section-label">1. Owner Setup</div>
+          <h3>Set the agent's money rules</h3>
+          <p class="subcopy">
+            This is the actual product setup screen. The treasury owner decides how much capital is protected, how much budget the agent can use, and which assets or routes are allowed.
+          </p>
+          <div class="control-grid">${renderBudgetControls(packet)}</div>
         </section>
 
         <section class="detail-grid">
-          <article class="panel" id="checks">
-            <div class="section-label">Decision Engine</div>
-            <h3>Checks before any money moves</h3>
+          <article class="panel" id="agent-request">
+            <div class="section-label">2. Agent Request</div>
+            <h3>Review what the agent wants to do</h3>
+            <p class="subcopy">
+              The agent asked to rebalance the wallet. This screen shows the request in plain terms before execution.
+            </p>
+            <div class="data-grid">
+              <div class="data-card"><div class="k">Agent</div><div class="v">${escapeHtml(packet.charter.consumerName)}</div></div>
+              <div class="data-card"><div class="k">Action</div><div class="v">${escapeHtml(titleCase(packet.request.action))}</div></div>
+              <div class="data-card"><div class="k">From / To</div><div class="v">${escapeHtml(packet.request.fromToken)} -> ${escapeHtml(packet.request.toToken)}</div></div>
+              <div class="data-card"><div class="k">Venue</div><div class="v">${escapeHtml(packet.request.venueHint)}</div></div>
+              <div class="data-card"><div class="k">Requested Size</div><div class="v">${formatUsd(packet.request.notionalUsd)}</div></div>
+              <div class="data-card"><div class="k">Reason</div><div class="v">${escapeHtml(packet.request.reason)}</div></div>
+            </div>
+            <div class="mini-pill-row">${renderRouteHints(packet)}</div>
+          </article>
+
+          <article class="panel" id="decision">
+            <div class="section-label">3. Decision</div>
+            <h3>See what the product allowed</h3>
+            <p class="subcopy">
+              The request was larger than the active budget rules allowed, so the product resized it before broadcasting.
+            </p>
+            <div class="decision-box">${renderDecisionSummary(packet)}</div>
+          </article>
+        </section>
+
+        <section class="panel" id="operator-controls" style="margin-top: 18px;">
+          <div class="section-label">4. Operator Controls</div>
+          <h3>Human owner can stop, review, or resume the agent</h3>
+          <p class="subcopy">
+            This is the human control layer. The agent is autonomous only while the lease is active, the route is allowed, and the released yield budget is still available.
+          </p>
+          <div class="action-grid">${renderOperatorActions(packet)}</div>
+          <div class="operator-callout">
+            <strong>Product promise</strong>
+            The agent never receives open-ended wallet access. Every spend request is attached to a lease, a reason, a policy decision, and a receipt.
+          </div>
+        </section>
+
+        <section class="detail-grid">
+          <article class="panel">
+            <div class="section-label">Policy Checklist</div>
+            <h3>Why the decision was safe</h3>
             <p class="subcopy">This is the core product behavior. The request does not get to spend first. Budget, route quality, scope, and safety are checked first.</p>
             <div class="check-grid">${renderChecks(packet)}</div>
           </article>
 
           <article class="panel" id="receipt">
-            <div class="section-label">Result</div>
-            <h3>What actually happened</h3>
+            <div class="section-label">5. Receipt</div>
+            <h3>Confirm what actually happened</h3>
             <p class="subcopy">After the checks, the system records the outcome. You can see whether the request was blocked, resized, simulated, or actually broadcasted onchain.</p>
             <div class="receipt-grid">
               <div class="receipt-box"><div class="k">Execution Status</div><div class="v">${escapeHtml(titleCase(packet.execution.status))}</div></div>
@@ -760,7 +1037,7 @@ export function buildProofDashboardHtml(input: {
         </section>
 
         <section class="panel" id="rounds" style="margin-top: 18px;">
-          <div class="section-label">History</div>
+          <div class="section-label">6. History</div>
           <h3>Recent agent budget events</h3>
           <p class="subcopy">The product keeps a rolling history so the owner can inspect how often the agent tried to use budget, what the system decided, and which requests reached onchain broadcast.</p>
           <table>

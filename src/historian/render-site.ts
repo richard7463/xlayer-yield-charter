@@ -105,10 +105,12 @@ function renderCapitalBands(packet: ProofPacket): string {
 export function buildSubmissionHtml(input: {
   packet: ProofPacket;
   index: RoundArtifactIndexEntry[];
-  proofDashboardFileName?: string;
+  proofDashboardHref?: string;
+  latestJsonHref?: string;
 }): string {
   const { packet, index } = input;
-  const proofDashboardFileName = input.proofDashboardFileName ?? "proof-dashboard.html";
+  const proofDashboardHref = input.proofDashboardHref ?? "./proof/";
+  const latestJsonHref = input.latestJsonHref ?? "./live-proof-latest.json";
   const productName = titleCase(packet.product);
   const executionTone = packet.execution.status === "broadcasted" ? "ok" : packet.execution.status === "simulated" ? "warn" : "fail";
   const demoState = {
@@ -655,8 +657,8 @@ export function buildSubmissionHtml(input: {
           <span class="brand-title">${escapeHtml(productName)}</span>
         </div>
         <div class="topbar-links">
-          <a class="mini-link" href="./${escapeHtml(proofDashboardFileName)}">Open Proof Dashboard</a>
-          <a class="mini-link" href="./live-proof-latest.json">Open Latest JSON</a>
+          <a class="mini-link" href="${escapeHtml(proofDashboardHref)}">Open Proof Dashboard</a>
+          <a class="mini-link" href="${escapeHtml(latestJsonHref)}">Open Latest JSON</a>
           <span class="status-pill ${executionTone}">Execution ${escapeHtml(titleCase(packet.execution.status))}</span>
         </div>
       </section>
@@ -927,9 +929,32 @@ export function buildSiteIndexHtml(): string {
 
 export function writeSubmissionSite(input: { packet: ProofPacket; index: RoundArtifactIndexEntry[]; baseDir: string }): { proofDashboardPath: string; submissionPath: string; indexPath: string } {
   const proofDashboardPath = writeProofDashboardHtml({ packet: input.packet, index: input.index, outputPath: path.resolve(input.baseDir, "proof-dashboard.html") });
+  const proofRoutePath = path.resolve(input.baseDir, "proof", "index.html");
+  fs.mkdirSync(path.dirname(proofRoutePath), { recursive: true });
+  fs.writeFileSync(proofRoutePath, `${fs.readFileSync(proofDashboardPath, "utf8").trimEnd()}\n`);
+
   const submissionPath = path.resolve(input.baseDir, "submission.html");
-  fs.writeFileSync(submissionPath, `${buildSubmissionHtml({ packet: input.packet, index: input.index, proofDashboardFileName: path.basename(proofDashboardPath) })}\n`);
+  const rootSubmissionHtml = buildSubmissionHtml({
+    packet: input.packet,
+    index: input.index,
+    proofDashboardHref: "./proof/",
+    latestJsonHref: "./live-proof-latest.json"
+  });
+  fs.writeFileSync(submissionPath, `${rootSubmissionHtml}\n`);
+
+  const submissionRoutePath = path.resolve(input.baseDir, "submission", "index.html");
+  fs.mkdirSync(path.dirname(submissionRoutePath), { recursive: true });
+  fs.writeFileSync(
+    submissionRoutePath,
+    `${buildSubmissionHtml({
+      packet: input.packet,
+      index: input.index,
+      proofDashboardHref: "../proof/",
+      latestJsonHref: "../live-proof-latest.json"
+    })}\n`
+  );
+
   const indexPath = path.resolve(input.baseDir, "index.html");
-  fs.writeFileSync(indexPath, `${buildSiteIndexHtml()}\n`);
+  fs.writeFileSync(indexPath, `${rootSubmissionHtml}\n`);
   return { proofDashboardPath, submissionPath, indexPath };
 }

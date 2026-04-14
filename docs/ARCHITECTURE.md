@@ -79,7 +79,7 @@ Responsibilities:
 5. evaluate charter + lease checks
 6. optionally execute through OnchainOS
 7. append receipt
-8. write proof packet and HTML pages
+8. write proof packet and refresh the Next.js-facing data files
 
 ## Proof Packet
 
@@ -103,8 +103,10 @@ Reference: `examples/live-proof-latest.json`
 
 ## Deployment Surfaces
 
+- Next.js app router pages in `app/`
+- shared UI in `components/`
 - CLI scripts in `scripts/`
 - systemd templates in `deploy/systemd/`
-- proof dashboard in `data/yield-charter/proof-dashboard.html`
-- submission page in `data/yield-charter/submission.html`
+- data packets in `data/yield-charter/`
 - public samples in `examples/`
+- optional legacy static HTML exports in `data/yield-charter/*.html`

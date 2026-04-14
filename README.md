@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://yield-charter.vercel.app"><img alt="Live App" src="https://img.shields.io/badge/Live%20App-Vercel-black"></a>
-  <a href="https://yield-charter.vercel.app/proof-dashboard.html"><img alt="Proof Dashboard" src="https://img.shields.io/badge/Proof-Dashboard-0f766e"></a>
+  <a href="https://yield-charter.vercel.app/proof"><img alt="Proof Dashboard" src="https://img.shields.io/badge/Proof-Dashboard-0f766e"></a>
   <a href="https://www.oklink.com/xlayer/tx/0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0"><img alt="Live Tx" src="https://img.shields.io/badge/Live%20Tx-Yield%20Broadcasted-success"></a>
   <img alt="Track" src="https://img.shields.io/badge/Track-Build%20X%20Human%20Track-111827">
   <img alt="Arena" src="https://img.shields.io/badge/Arena-X%20Layer%20Arena-2563eb">
@@ -61,7 +61,7 @@ receipt and tx proof are written
 | Item | Link / Evidence |
 | --- | --- |
 | Live app | [yield-charter.vercel.app](https://yield-charter.vercel.app) |
-| Live proof dashboard | [yield-charter.vercel.app/proof-dashboard.html](https://yield-charter.vercel.app/proof-dashboard.html) |
+| Live proof dashboard | [yield-charter.vercel.app/proof](https://yield-charter.vercel.app/proof) |
 | Latest proof JSON | [yield-charter.vercel.app/live-proof-latest.json](https://yield-charter.vercel.app/live-proof-latest.json) |
 | GitHub repo | [richard7463/xlayer-yield-charter](https://github.com/richard7463/xlayer-yield-charter) |
 | Track | Build X Human Track / X Layer Arena |
@@ -166,8 +166,8 @@ Before any execution path is used, the runtime checks:
 Every round writes:
 
 - `live-proof-latest.json`
-- `proof-dashboard.html`
-- `submission.html`
+- Next.js submission route at `/`
+- Next.js proof route at `/proof`
 - rolling `rounds/*.json`
 - receipt records with tx and capital layer evidence
 
@@ -220,12 +220,15 @@ sequenceDiagram
 
 | Path | Responsibility |
 | --- | --- |
+| [`app/`](app) | Public Next.js app router surface for `/`, `/submission`, `/proof`, and `/api/live-proof` |
+| [`components/`](components) | Product-facing submission and proof UI |
+| [`lib/`](lib) | Shared formatting, file-backed site data, and view types |
 | [`src/runtime/yield-charter-agent.ts`](src/runtime/yield-charter-agent.ts) | Orchestrates the full charter round |
 | [`src/charter/`](src/charter) | Principal floor, released yield, yield ledger |
 | [`src/lease/`](src/lease) | Pre-execution lease policy and receipt storage |
 | [`src/portfolio/`](src/portfolio) | Balance reads, allocation drift, quote, execution |
 | [`src/onchainos/`](src/onchainos) | OnchainOS / Agentic Wallet CLI integration |
-| [`src/historian/`](src/historian) | Submission page and proof dashboard rendering |
+| [`src/historian/`](src/historian) | Legacy HTML proof export generation used for snapshots and offline artifacts |
 | [`scripts/`](scripts) | Local / live commands |
 | [`deploy/systemd/`](deploy/systemd) | Server timer templates |
 | [`docs/`](docs) | Architecture, runbooks, demo script, submission copy |
@@ -252,7 +255,10 @@ npm run status:latest
 npm run demo:serve
 ```
 
-Open the local proof site after `npm run demo:serve`.
+Then open:
+
+- `http://127.0.0.1:4312/`
+- `http://127.0.0.1:4312/proof`
 
 ## Live Mode
 
@@ -283,16 +289,16 @@ npm run status:latest
 
 ## Vercel Deployment
 
-The public proof surface is deployed from `data/yield-charter/` to Vercel.
+The public product surface is now a standalone Next.js app deployed from the repo root.
 
 - Live app: [yield-charter.vercel.app](https://yield-charter.vercel.app)
-- Proof dashboard: [yield-charter.vercel.app/proof-dashboard.html](https://yield-charter.vercel.app/proof-dashboard.html)
+- Proof dashboard: [yield-charter.vercel.app/proof](https://yield-charter.vercel.app/proof)
 - Latest JSON: [yield-charter.vercel.app/live-proof-latest.json](https://yield-charter.vercel.app/live-proof-latest.json)
 
 To redeploy:
 
 ```bash
-cd data/yield-charter
+cd /path/to/xlayer-yield-charter
 vercel deploy --prod --scope ritsuyans-projects
 ```
 
@@ -308,4 +314,4 @@ vercel deploy --prod --scope ritsuyans-projects
 
 ## Team
 
-Solo build in this repo, using shared X Layer wallet infrastructure already proven in adjacent projects inside the workspace.
+Solo build in this repo.

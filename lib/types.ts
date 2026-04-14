@@ -1,0 +1,171 @@
+export type OperatorMode = 'active' | 'review' | 'paused';
+export type TrustZone = 'green' | 'yellow' | 'red';
+export type LeaseOutcome = 'approve' | 'resize' | 'block' | 'human_approval';
+export type LeaseAction = 'buy' | 'sell' | 'rebalance';
+export type LeaseStatus = 'active' | 'revoked' | 'expired';
+export type YieldCharterStatus = 'active' | 'revoked';
+export type YieldSourceMode = 'declared_release' | 'treasury_buffer';
+
+export interface OperatorState {
+  operatorName: string;
+  mode: OperatorMode;
+  lastCommand: 'initialize' | 'resume' | 'review' | 'pause';
+  note?: string;
+  updatedAt: string;
+}
+
+export interface TreasurySnapshot {
+  timestamp: string;
+  network: string;
+  chainId: number;
+  baseAsset: string;
+  totalUsd: number;
+  liquidUsd: number;
+  capitalAtRiskUsd: number;
+  balances: Array<{
+    symbol: string;
+    amount: number;
+    usdValue: number;
+  }>;
+}
+
+export interface YieldCharterPolicy {
+  charterId: string;
+  issuedAt: string;
+  status: YieldCharterStatus;
+  ownerLabel: string;
+  consumerName: string;
+  walletAddress?: string;
+  principalFloorUsd: number;
+  releasedYieldUsd: number;
+  spendAsset: string;
+  yieldSourceMode: YieldSourceMode;
+  yieldSourceName: string;
+  notes: string[];
+}
+
+export interface YieldLedgerSnapshot {
+  updatedAt: string;
+  yieldSourceMode: YieldSourceMode;
+  yieldSourceName: string;
+  treasuryUsd: number;
+  principalFloorUsd: number;
+  treasuryBufferUsd: number;
+  accruedYieldUsd: number;
+  releasedYieldUsd: number;
+  harvestedYieldUsd: number;
+  spentYieldUsd: number;
+  spendableYieldUsd: number;
+  remainingYieldBudgetUsd: number;
+}
+
+export interface LeasePolicy {
+  leaseId: string;
+  issuedAt: string;
+  expiresAt: string;
+  status: LeaseStatus;
+  ownerLabel: string;
+  consumerName: string;
+  walletAddress?: string;
+  baseAsset: string;
+  allowedAssets: string[];
+  allowedProtocols: string[];
+  allowedActions: LeaseAction[];
+  counterpartyAllowlist: string[];
+  perTxUsd: number;
+  dailyBudgetUsd: number;
+  trustRequirements: {
+    reasonRequired: boolean;
+    proofRequired: boolean;
+    operatorCanPause: boolean;
+    degradedRequiresReview: boolean;
+  };
+  notes: string[];
+}
+
+export interface LeaseRequest {
+  requestId: string;
+  createdAt: string;
+  sourceProject: string;
+  consumerName: string;
+  leaseId: string;
+  action: LeaseAction;
+  assetPair: string;
+  fromToken: string;
+  toToken: string;
+  venueHint: string;
+  counterparty: string;
+  notionalUsd: number;
+  reason: string;
+}
+
+export interface LeaseCheck {
+  id: string;
+  label: string;
+  ok: boolean;
+  note: string;
+}
+
+export interface LeaseUsageWindow {
+  startedAt: string;
+  spent24hUsd: number;
+  remainingDailyUsd: number;
+  receiptCount24h: number;
+}
+
+export interface LeaseDecision {
+  outcome: LeaseOutcome;
+  trustZone: TrustZone;
+  finalNotionalUsd: number;
+  policyHits: string[];
+  rationale: string;
+}
+
+export interface ExecutionResult {
+  status: 'ready' | 'simulated' | 'broadcasted' | 'failed' | 'blocked';
+  network: 'xlayer-mainnet' | 'xlayer-testnet' | 'xlayer-custom';
+  chainId: number;
+  txHash?: string;
+  explorerUrl?: string;
+  note: string;
+}
+
+export interface LeaseReceipt {
+  generatedAt: string;
+  leaseId: string;
+  charterId?: string;
+  consumerName: string;
+  requestId: string;
+  status: 'recorded' | 'broadcasted' | 'failed' | 'blocked';
+  capitalLayer: 'yield' | 'principal' | 'none';
+  spentUsd: number;
+  txHash?: string;
+  explorerUrl?: string;
+  note: string;
+}
+
+export interface ProofPacket {
+  generatedAt: string;
+  product: string;
+  operator: OperatorState;
+  charter: YieldCharterPolicy;
+  treasury: TreasurySnapshot;
+  yieldLedger: YieldLedgerSnapshot;
+  lease: LeasePolicy;
+  request: LeaseRequest;
+  checks: LeaseCheck[];
+  usage: LeaseUsageWindow;
+  decision: LeaseDecision;
+  execution: ExecutionResult;
+  receipt: LeaseReceipt;
+}
+
+export interface RoundArtifactIndexEntry {
+  generatedAt: string;
+  leaseId: string;
+  requestId: string;
+  outcome: string;
+  txHash?: string;
+  summary: string;
+  relativePath: string;
+}

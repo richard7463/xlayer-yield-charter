@@ -41,7 +41,7 @@ Narration:
 Open:
 
 ```text
-data/yield-charter/proof-dashboard.html
+http://127.0.0.1:4312/proof
 ```
 
 Show:

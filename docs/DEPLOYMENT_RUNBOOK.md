@@ -11,6 +11,11 @@ npm run status:latest
 npm run demo:serve
 ```
 
+Open:
+
+- `http://127.0.0.1:4312/`
+- `http://127.0.0.1:4312/proof`
+
 ## Live X Layer Mode
 
 Set `.env.local`:
@@ -37,10 +42,9 @@ npm run status:latest
 ## Artifacts
 
 - `data/yield-charter/live-proof-latest.json`
-- `data/yield-charter/proof-dashboard.html`
-- `data/yield-charter/submission.html`
 - `data/yield-charter/index.json`
 - `data/yield-charter/receipts/*.json`
+- optional legacy HTML exports: `data/yield-charter/proof-dashboard.html`, `data/yield-charter/submission.html`
 
 ## Server Timer
 

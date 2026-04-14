@@ -87,9 +87,9 @@ npm run status:latest
 Expected outputs:
 
 - `data/yield-charter/live-proof-latest.json`
-- `data/yield-charter/proof-dashboard.html`
-- `data/yield-charter/submission.html`
 - `data/yield-charter/receipts/*.json`
+- Next.js UI served from `/` and `/proof`
+- optional legacy exports in `data/yield-charter/proof-dashboard.html` and `data/yield-charter/submission.html`
 
 ## systemd Timer
 

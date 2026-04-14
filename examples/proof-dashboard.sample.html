@@ -646,7 +646,7 @@
               </article>
             </div>
           </div>
-          
+
     <div class="meter-card">
       <div class="meter-head">
         <div>
@@ -673,7 +673,7 @@
         <div class="remaining-fill" style="width:11.883541295306003%"></div>
       </div>
     </div>
-  
+
         </section>
 
         <section class="panel" id="how-it-works" style="margin-top: 18px;">
@@ -688,25 +688,25 @@
           <h4>Owner locks the treasury</h4>
           <p>$4.00 is marked as principal. The agent cannot spend below this floor.</p>
         </article>
-      
+
         <article class="flow-card">
           <div class="flow-label">2. Release</div>
           <h4>Owner releases yield budget</h4>
           <p>$3.00 is released as agent operating budget. This is the only money the agent can use.</p>
         </article>
-      
+
         <article class="flow-card">
           <div class="flow-label">3. Request</div>
           <h4>Agent asks to act</h4>
           <p>yield-ops-agent requested $3.23 for OKB -&gt; USDT0.</p>
         </article>
-      
+
         <article class="flow-card">
           <div class="flow-label">4. Decide</div>
           <h4>Guard resizes or blocks</h4>
           <p>The guard returned Resize and allowed $1.00.</p>
         </article>
-      
+
         <article class="flow-card">
           <div class="flow-label">5. Receipt</div>
           <h4>Every action leaves proof</h4>
@@ -727,31 +727,31 @@
           <div class="control-value">$4.00</div>
           <p>Money the agent cannot touch.</p>
         </article>
-      
+
         <article class="control-card">
           <div class="control-label">Release budget</div>
           <div class="control-value">$3.00</div>
           <p>Money the agent is allowed to use.</p>
         </article>
-      
+
         <article class="control-card">
           <div class="control-label">Set per-tx cap</div>
           <div class="control-value">$1.00</div>
           <p>Maximum size before resizing.</p>
         </article>
-      
+
         <article class="control-card">
           <div class="control-label">Set daily cap</div>
           <div class="control-value">$3.00</div>
           <p>Maximum agent spend per day.</p>
         </article>
-      
+
         <article class="control-card">
           <div class="control-label">Allow assets</div>
           <div class="control-value">USDT0, USDC, OKB</div>
           <p>Tokens the agent can touch.</p>
         </article>
-      
+
         <article class="control-card">
           <div class="control-label">Allow routes</div>
           <div class="control-value">okx-aggregator, quickswap</div>
@@ -789,17 +789,17 @@
           <span>Agent asked for</span>
           <strong>$3.23</strong>
         </div>
-      
+
         <div class="decision-row">
           <span>Product allowed</span>
           <strong>$1.00</strong>
         </div>
-      
+
         <div class="decision-row">
           <span>Decision</span>
           <strong>Resize</strong>
         </div>
-      
+
         <div class="decision-row">
           <span>Why</span>
           <strong>Charter allowed the request but resized it to stay inside released yield and route quality limits.</strong>
@@ -820,19 +820,19 @@
           <strong>Stop all new spending</strong>
           <p>Used when the owner sees strange behavior or wants to freeze the agent before the next request.</p>
         </article>
-      
+
         <article class="action-card">
           <span>Review mode</span>
           <strong>Route risky requests to human review</strong>
           <p>Used when the agent can keep reporting, but cannot execute without a human checkpoint.</p>
         </article>
-      
+
         <article class="action-card">
           <span>Resume</span>
           <strong>Reopen the budget lane</strong>
           <p>Current mode is Active. The agent can operate only inside the active lease.</p>
         </article>
-      
+
         <article class="action-card">
           <span>Open receipt</span>
           <strong>Inspect the transaction</strong>
@@ -858,7 +858,7 @@
           </div>
           <p>operator=active</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -866,7 +866,7 @@
           </div>
           <p>status=active</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -874,7 +874,7 @@
           </div>
           <p>expiresAt=2026-04-14T14:02:19.316Z</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -882,7 +882,7 @@
           </div>
           <p>unscoped</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -890,7 +890,7 @@
           </div>
           <p>reason present</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -898,7 +898,7 @@
           </div>
           <p>action=rebalance</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -906,7 +906,7 @@
           </div>
           <p>OKB-&gt;USDT0</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -914,7 +914,7 @@
           </div>
           <p>venue=okx-aggregator</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -922,7 +922,7 @@
           </div>
           <p>counterparty=okx-aggregator</p>
         </article>
-      
+
         <article class="check-card fail">
           <div class="check-topline">
             <span class="check-icon">BLOCK</span>
@@ -930,7 +930,7 @@
           </div>
           <p>request=$3.23 / limit=$1</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -938,7 +938,7 @@
           </div>
           <p>remaining=$2.00</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -946,7 +946,7 @@
           </div>
           <p>remaining_yield=$3.00</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -954,7 +954,7 @@
           </div>
           <p>route ready</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -962,7 +962,7 @@
           </div>
           <p>impact=-0.08% / max=2%</p>
         </article>
-      
+
         <article class="check-card ok">
           <div class="check-topline">
             <span class="check-icon">PASS</span>
@@ -1014,28 +1014,28 @@
           <td class="mono">0x15cca235...2aa321d0</td>
           <td>product=xlayer-yield-charter | operator=active | charter=charter_ea21614c-3999-465a-89fe-f6209c0b723e | lease=lease_fc721978-9dac-4a36-b91b-e5d23ad9f927 | outcome=resize | zone=yellow | notional=1 | yield_remaining=2.00 | tx=0x15cca235de24f037bfab1f5489aa23940e442dd6c1ea22ebadd878a52aa321d0</td>
         </tr>
-      
+
         <tr>
           <td>2026-04-13T14:02:29.615Z</td>
           <td><span class="table-pill">Resize</span></td>
           <td class="mono">none</td>
           <td>product=xlayer-yield-charter | operator=active | charter=charter_ea21614c-3999-465a-89fe-f6209c0b723e | lease=lease_fc721978-9dac-4a36-b91b-e5d23ad9f927 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
         </tr>
-      
+
         <tr>
           <td>2026-04-13T14:01:54.313Z</td>
           <td><span class="table-pill">Resize</span></td>
           <td class="mono">none</td>
           <td>product=xlayer-yield-charter | operator=active | charter=charter_37db14f1-f1ca-40b3-afdc-ecd8e902dd58 | lease=lease_d6100a43-bcef-41fb-8e8a-3f2f44830cfd | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
         </tr>
-      
+
         <tr>
           <td>2026-04-12T09:05:25.237Z</td>
           <td><span class="table-pill">Resize</span></td>
           <td class="mono">none</td>
           <td>product=xlayer-yield-charter | operator=active | charter=charter_2a0dcfca-127f-4060-aa5d-797b695ad1d0 | lease=lease_3b135e2b-110d-432d-824b-a7ee0b54deb8 | outcome=resize | zone=yellow | notional=1 | yield_remaining=3.00 | tx=none</td>
         </tr>
-      
+
         <tr>
           <td>2026-04-12T08:49:38.451Z</td>
           <td><span class="table-pill">Resize</span></td>
